@@ -39,7 +39,7 @@
             class="mt-8 text-5xl font-extrabold text-white lg:text-6xl"
         >
 
-            Galeri SIBERSIH
+            Galeri Kegiatan Kkn Talagasari 2026
 
         </h1>
 
