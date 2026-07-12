@@ -9,7 +9,7 @@
 
     <title>
 
-        @yield('title','SIBERSIH')
+        @yield('title','Talagasari2026')
 
     </title>
 

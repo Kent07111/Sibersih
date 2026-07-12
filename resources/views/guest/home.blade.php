@@ -1,6 +1,6 @@
 @extends('guest.layouts.guest')
 
-@section('title','SIBERSIH')
+@section('title','Talagasari2026')
 
 @section('content')
 
