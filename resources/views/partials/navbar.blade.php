@@ -30,7 +30,7 @@
             </h2>
 
             <p class="text-sm text-slate-500">
-                Sistem Informasi Bank Sampah
+                 {{ $setting->name }}
             </p>
         </div>
 

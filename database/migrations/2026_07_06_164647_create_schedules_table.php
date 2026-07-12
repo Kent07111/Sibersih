@@ -17,7 +17,6 @@ Schema::create('schedules', function (Blueprint $table) {
 
     $table->string('judul');
 
-    $table->string('hari');
 
     $table->date('tanggal');
 

@@ -46,4 +46,8 @@ class Activity extends Model
     {
         return $this->hasMany(ActivityImage::class);
     }
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 }

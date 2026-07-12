@@ -7,11 +7,11 @@
 
         <div>
             <h1 class="text-2xl font-bold text-green-400">
-                SIBERSIH
+                {{ $setting->nama_desa }}
             </h1>
 
             <p class="text-xs text-slate-400">
-                Sistem Informasi Bank Sampah
+                {{ $setting->name }}
             </p>
         </div>
 
@@ -75,6 +75,14 @@
             'title' => 'Kegiatan',
             'route' => 'activity.index',
         ],
+        [
+            'title' => 'Galeri',
+            'route' => 'gallery.index',
+        ],
+        [
+            'title' => 'Agenda',
+            'route' => 'schedule.index',
+        ],
         // menu lainnya...
     ];
 @endphp
@@ -95,7 +103,7 @@
         </p>
 
         <a
-            href="#"
+            href="/report"
             class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800"
         >
             <div class="h-2 w-2 rounded-full bg-blue-500"></div>
@@ -104,7 +112,7 @@
         </a>
 
         <a
-            href="#"
+            href="/setting/qr-center"
             class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800"
         >
             <div class="h-2 w-2 rounded-full bg-yellow-500"></div>
@@ -126,7 +134,7 @@
         </a>
 
         <a
-            href="#"
+            href="/settings"
             class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800"
         >
             <div class="h-2 w-2 rounded-full bg-pink-500"></div>

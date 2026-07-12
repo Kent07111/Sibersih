@@ -17,6 +17,8 @@ Schema::create('settings', function (Blueprint $table) {
 
     $table->string('nama_desa');
 
+    $table->string('name');
+
     $table->text('alamat');
 
     $table->string('telepon');
@@ -26,6 +28,10 @@ Schema::create('settings', function (Blueprint $table) {
     $table->string('logo')->nullable();
 
     $table->string('favicon')->nullable();
+
+    $table->string('banner')->nullable();
+
+    $table->string('hero_image')->nullable();
 
     $table->longText('tentang')->nullable();
 
