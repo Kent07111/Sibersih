@@ -61,7 +61,7 @@
             >
 
                 <a
-                    href="#edukasi"
+                    href="/edukasi"
                     class="rounded-xl bg-white px-8 py-4 font-semibold text-green-700 transition hover:scale-105"
                 >
 
@@ -70,7 +70,7 @@
                 </a>
 
                 <a
-                    href="#lapor"
+                    href="/lapor"
                     class="rounded-xl border border-white px-8 py-4 font-semibold text-white transition hover:bg-white hover:text-green-700"
                 >
 
