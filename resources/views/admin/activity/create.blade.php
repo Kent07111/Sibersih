@@ -314,13 +314,50 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.tiny.cloud/1/4jrzzsgk6khdvn5i43u7wbrxotg20bhraoc2697y5s60qcr9/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 
 
 <script>
 
-ClassicEditor.create(
-    document.querySelector('#editor')
-);
+tinymce.init({
+    selector: '#editor',
+    height: 500,
+    menubar: false,
+
+    plugins: [
+        'advlist',
+        'autolink',
+        'lists',
+        'link',
+        'image',
+        'charmap',
+        'preview',
+        'anchor',
+        'searchreplace',
+        'visualblocks',
+        'code',
+        'fullscreen',
+        'insertdatetime',
+        'media',
+        'table',
+        'wordcount'
+    ],
+
+    toolbar:
+        'undo redo | blocks | ' +
+        'bold italic underline | forecolor backcolor | ' +
+        'alignleft aligncenter alignright alignjustify | ' +
+        'bullist numlist outdent indent | ' +
+        'link image media table | ' +
+        'preview code fullscreen',
+
+    branding: false,
+    promotion: false
+});
+
+document.querySelector("form").addEventListener("submit", function () {
+    tinymce.triggerSave();
+});
 
 // Preview Thumbnail
 
