@@ -67,9 +67,6 @@
             <a href="/jadwal" class="menu-link">Jadwal</a>
 
             <a href="/lapor" class="menu-link">Lapor</a>
-
-            <a href="#kontak" class="menu-link">Kontak</a>
-
             <a
                 href="{{ route('login') }}"
                 class="rounded-xl bg-green-600 px-5 py-2 font-semibold text-white hover:bg-green-700"
@@ -106,10 +103,6 @@
 
             <a class="mobile-menu" href="#home">Home</a>
 
-            <a class="mobile-menu" href="#tentang">Tentang</a>
-
-            <a class="mobile-menu" href="#peta">Peta</a>
-
             <a class="mobile-menu" href="/edukasi">Edukasi</a>
 
             <a class="mobile-menu" href="/kegiatan">Kegiatan</a>
@@ -120,7 +113,6 @@
 
             <a class="mobile-menu" href="/lapor">Lapor</a>
 
-            <a class="mobile-menu" href="#kontak">Kontak</a>
 
             <a
                 href="{{ route('login') }}"
