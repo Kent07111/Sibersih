@@ -243,8 +243,7 @@
                         >
 
                             <i class="fa-solid fa-calendar-day mr-2"></i>
-
-                            {{ $schedule->hari }}
+                            {{ \Carbon\Carbon::parse($schedule->tanggal)->locale('id')->translatedFormat('l, d F Y') }}
 
                         </span>
 
