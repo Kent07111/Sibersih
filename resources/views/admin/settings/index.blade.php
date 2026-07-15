@@ -296,6 +296,7 @@ Swal.fire({
                     type="file"
                     id="logo"
                     name="logo"
+                    accept="image/*,.heic,.heif"
                     class="mt-6 w-full rounded-xl border border-slate-300 p-3"
                 >
 
@@ -425,52 +426,104 @@ Swal.fire({
 
 @push('scripts')
 
-<script>
+<script type="module">
 
-function preview(input,id){
+async function convertAndPreview(input, previewId){
 
-    input.addEventListener('change',function(){
+    if(!input.files.length) return;
 
-        if(!this.files.length) return;
+    let file = input.files[0];
 
-        let reader=new FileReader();
+    let ext = file.name.split('.').pop().toLowerCase();
 
-        reader.onload=function(e){
+    if(ext === 'heic' || ext === 'heif'){
 
-            document.getElementById(id).src=e.target.result;
+        try{
+
+            const converted = await window.heic2any({
+
+                blob:file,
+
+                toType:'image/jpeg',
+
+                quality:0.9
+
+            });
+
+            file = new File(
+
+                [converted],
+
+                file.name.replace(/\.(heic|heif)$/i,'.jpg'),
+
+                {
+
+                    type:'image/jpeg'
+
+                }
+
+            );
+
+            const dt = new DataTransfer();
+
+            dt.items.add(file);
+
+            input.files = dt.files;
+
+        }catch(e){
+
+            Swal.fire({
+
+                icon:'error',
+
+                title:'Gagal',
+
+                text:'File HEIC tidak dapat dikonversi.'
+
+            });
+
+            return;
 
         }
 
-        reader.readAsDataURL(this.files[0]);
+    }
 
-    });
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        document.getElementById(previewId).src = e.target.result;
+
+    }
+
+    reader.readAsDataURL(file);
 
 }
 
-preview(
+document.getElementById('logo').addEventListener('change',function(){
 
-    document.getElementById('logo'),
+    convertAndPreview(this,'logoPreview');
 
-    'logoPreview'
+});
 
-);
+document.getElementById('favicon').addEventListener('change',function(){
 
-preview(
+    convertAndPreview(this,'faviconPreview');
 
-    document.getElementById('favicon'),
+});
 
-    'faviconPreview'
+document.getElementById('banner').addEventListener('change',function(){
 
-);
-preview(
-    document.getElementById('banner'),
-    'bannerPreview'
-);
+    convertAndPreview(this,'bannerPreview');
 
-preview(
-    document.getElementById('hero_image'),
-    'heroPreview'
-);
+});
+
+document.getElementById('hero_image').addEventListener('change',function(){
+
+    convertAndPreview(this,'heroPreview');
+
+});
+
 </script>
 
 @endpush

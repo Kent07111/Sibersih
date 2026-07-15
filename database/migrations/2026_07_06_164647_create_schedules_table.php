@@ -28,8 +28,11 @@ Schema::create('schedules', function (Blueprint $table) {
 
     $table->enum('status',[
         'Aktif',
-        'Selesai'
-    ])->default('Aktif');
+        'Selesai',
+        'Comming Soon',
+        'Progress',
+        'Dibatalkan'
+    ])->default('Comming Soon');
 
     $table->timestamps();
 

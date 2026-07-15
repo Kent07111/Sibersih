@@ -76,10 +76,10 @@ class ReportgController extends Controller
 
         ]);
 
-return redirect()
-    ->route('guest.report.create')
-    ->with('success', 'Laporan berhasil dikirim. Terima kasih atas partisipasi Anda.');
-    }
+        return redirect()
+            ->route('guest.report.create')
+            ->with('success', 'Laporan berhasil dikirim. Terima kasih atas partisipasi Anda.');
+            }
 
     public function success()
     {

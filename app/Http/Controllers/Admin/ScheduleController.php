@@ -62,7 +62,7 @@ class ScheduleController extends Controller
 
             'keterangan' => 'nullable',
 
-            'status' => 'required|in:Aktif,Selesai'
+            'status' => 'required|in:Aktif,Selesai,Comming Soon,Progress,Dibatalkan'
 
         ]);
 
@@ -112,8 +112,7 @@ class ScheduleController extends Controller
 
             'keterangan' => 'nullable',
 
-            'status' => 'required|in:Aktif,Selesai'
-
+            'status' => 'required|in:Aktif,Selesai,Comming Soon,Progress,Dibatalkan'
         ]);
 
         $schedule->update([

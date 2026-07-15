@@ -82,8 +82,10 @@ Route::prefix('lapor')
 |--------------------------------------------------------------------------
 */
 
+
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::post('/admin/education/upload-image',[App\Http\Controllers\Admin\EducationController::class, 'uploadImage'])->name('education.upload-image');
     Route::resource('waste-point', WastePointController::class);
     Route::resource('education',EducationController::class);
     Route::delete('activity-image/{image}',[ActivityController::class, 'destroyImage'])->name('activity-image.destroy');

@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Imagick\Driver;
+use Illuminate\Support\Str;
 use App\Models\Education;
 use App\Models\Activity;
 use App\Models\Setting;
@@ -144,6 +147,7 @@ private function saveSetting(Request $request, Setting $setting = null)
             'youtube'     => 'nullable|string|max:255',
 
             'maps_embed'  => 'nullable',
+
 
             'logo'        => 'nullable|image|max:2048',
             'favicon'     => 'nullable|image|max:1024',

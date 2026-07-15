@@ -215,7 +215,20 @@ public function update(Request $request, Education $education)
     /**
      * Remove the specified resource from storage.
      */
-public function destroy(Education $education)
+public function uploadImage(Request $request)
+{
+    $request->validate([
+        'file' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:4096',
+    ]);
+
+    $path = $request->file('file')
+        ->store('education/content', 'public');
+
+    return response()->json([
+        'location' => asset('storage/' . $path)
+    ]);
+}
+    public function destroy(Education $education)
 {
     if (
         $education->thumbnail &&

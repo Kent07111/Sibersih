@@ -15,6 +15,9 @@
         "vite": "^7.0.7"
     },
     "dependencies": {
-        "alpinejs": "^3.15.12"
+        "@ckeditor/ckeditor5-upload": "^48.3.1",
+        "alpinejs": "^3.15.12",
+        "heic2any": "^0.0.4",
+        "tinymce": "^8.8.0"
     }
 }

@@ -389,7 +389,7 @@
 
 </section>
 @push('scripts')
-
+<script src="https://cdn.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
 <script>
 
 let map = L.map('reportMap').setView([-6.3235,107.3375],13);
@@ -490,29 +490,73 @@ document.getElementById('currentLocation')
 
 });
 
-document.getElementById('foto')
+const fotoInput = document.getElementById('foto');
+const preview = document.getElementById('preview');
 
-.addEventListener('change',function(e){
+fotoInput.addEventListener('change', function (e) {
 
-    const file=e.target.files[0];
+    const file = e.target.files[0];
 
-    if(!file) return;
+    if (!file) return;
 
-    const reader=new FileReader();
+    new Compressor(file, {
 
-    reader.onload=function(event){
+        quality: 0.7,
+        maxWidth: 1280,
+        maxHeight: 1280,
+        convertSize: 0,
+        mimeType: 'image/jpeg',
 
-        const img=document.getElementById('preview');
+        success(result) {
 
-        img.src=event.target.result;
+            const compressedFile = new File(
+                [result],
+                file.name.replace(/\.\w+$/, '.jpg'),
+                {
+                    type: 'image/jpeg',
+                    lastModified: Date.now()
+                }
+            );
 
-        img.classList.remove('hidden');
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(compressedFile);
 
-    }
+            fotoInput.files = dataTransfer.files;
 
-    reader.readAsDataURL(file);
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+
+                preview.src = event.target.result;
+                preview.classList.remove('hidden');
+
+            };
+
+            reader.readAsDataURL(compressedFile);
+
+            console.log(
+                'Ukuran sebelum:',
+                (file.size / 1024 / 1024).toFixed(2) + ' MB'
+            );
+
+            console.log(
+                'Ukuran sesudah:',
+                (compressedFile.size / 1024 / 1024).toFixed(2) + ' MB'
+            );
+
+        },
+
+        error(err) {
+
+            console.error(err);
+            alert('Gagal mengompres gambar.');
+
+        }
+
+    });
 
 });
+
 
 </script>
 

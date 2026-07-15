@@ -80,7 +80,30 @@
                     Selesai
 
                 </option>
+                <option
+                    value="Selesai"
+                    @selected(request('status')=="Dibatalkan")
+                >
 
+                    Dibatalkan
+
+                </option>
+                <option
+                    value="Selesai"
+                    @selected(request('status')=="Progress")
+                >
+
+                    Progress
+
+                </option>
+                <option
+                    value="Selesai"
+                    @selected(request('status')=="Comming Soon")
+                >
+
+                    Comming Soon
+
+                </option>
             </select>
 
             <button
@@ -144,27 +167,20 @@
 
                         </h2>
 
-                        @if($schedule->status=="Aktif")
+@php
+    $statusClass = match($schedule->status) {
+        'Aktif' => 'bg-green-100 text-green-700',
+        'Progress' => 'bg-blue-100 text-blue-700',
+        'Comming Soon' => 'bg-yellow-100 text-yellow-700',
+        'Selesai' => 'bg-slate-200 text-slate-700',
+        'Dibatalkan' => 'bg-red-100 text-red-700',
+        default => 'bg-gray-100 text-gray-700',
+    };
+@endphp
 
-                            <span
-                                class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700"
-                            >
-
-                                Aktif
-
-                            </span>
-
-                        @else
-
-                            <span
-                                class="rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold text-slate-700"
-                            >
-
-                                Selesai
-
-                            </span>
-
-                        @endif
+<span class="rounded-full px-3 py-1 text-xs font-semibold {{ $statusClass }}">
+    {{ $schedule->status }}
+</span>
 
                     </div>
 
@@ -192,17 +208,13 @@
 
                     </div>
 
-                    @if($schedule->keterangan)
+@if($schedule->keterangan)
 
-                        <p
-                            class="mt-4 line-clamp-3 text-sm text-slate-600"
-                        >
+    <p class="mt-4 line-clamp-3 text-sm text-slate-600">
+        {{ \Illuminate\Support\Str::limit(strip_tags($schedule->keterangan), 120) }}
+    </p>
 
-                            {{ $schedule->keterangan }}
-
-                        </p>
-
-                    @endif
+@endif
 
                     <div
                         class="mt-6 flex gap-3"

@@ -4,54 +4,73 @@
 
 @section('content')
 
-<!-- HERO -->
+{{-- ================= HERO ================= --}}
 
 <section
-    class="relative overflow-hidden bg-gradient-to-r from-emerald-700 via-green-600 to-lime-500 pt-36 pb-40"
+    class="relative overflow-hidden bg-gradient-to-br from-emerald-700 via-green-600 to-lime-500 pt-36 pb-40"
 >
+
+    {{-- Background Decoration --}}
+
+    <div class="absolute inset-0">
+
+        <div class="absolute -left-20 -top-20 h-72 w-72 rounded-full bg-white/10 blur-3xl"></div>
+
+        <div class="absolute right-0 top-20 h-96 w-96 rounded-full bg-lime-300/10 blur-3xl"></div>
+
+        <div class="absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-emerald-300/10 blur-3xl"></div>
+
+    </div>
+
+    {{-- Floating Emoji --}}
 
     <div class="absolute inset-0 opacity-10">
 
-        <div class="absolute left-10 top-20 text-8xl">📅</div>
+        <div class="absolute left-12 top-20 text-8xl">📅</div>
 
-        <div class="absolute right-16 top-16 text-7xl">♻️</div>
+        <div class="absolute right-16 top-24 text-7xl">🌱</div>
 
-        <div class="absolute bottom-12 left-1/3 text-8xl">🌿</div>
+        <div class="absolute bottom-12 left-1/4 text-8xl">♻️</div>
 
-        <div class="absolute bottom-12 right-20 text-7xl">🌎</div>
+        <div class="absolute bottom-10 right-20 text-7xl">🌍</div>
 
     </div>
 
     <div
-        class="relative mx-auto max-w-5xl px-6 text-center"
+        class="relative mx-auto max-w-7xl px-6 text-center"
         data-aos="fade-up"
     >
 
         <span
-            class="inline-flex rounded-full bg-white/20 px-5 py-2 text-sm font-semibold text-white backdrop-blur"
+            class="inline-flex items-center gap-2 rounded-full bg-white/20 px-6 py-3 text-sm font-semibold text-white backdrop-blur"
         >
 
-            📅 Agenda Bank Sampah
+            <i class="fa-solid fa-calendar-days"></i>
+
+            Agenda Bank Sampah
 
         </span>
 
         <h1
-            class="mt-8 text-5xl font-extrabold text-white lg:text-6xl"
+            class="mt-8 text-5xl font-extrabold leading-tight text-white lg:text-6xl"
         >
 
-            Jadwal Kegiatan Kkn Talagasari 2026
+            Jadwal Kegiatan
+            <br>
+
+            KKN Talagasari 2026
 
         </h1>
 
         <p
-            class="mx-auto mt-8 max-w-3xl text-xl leading-9 text-green-100"
+            class="mx-auto mt-8 max-w-3xl text-lg leading-8 text-green-100 lg:text-xl"
         >
 
-            Informasi jadwal kegiatan,
+            Temukan seluruh agenda kegiatan,
             sosialisasi,
             pengangkutan sampah,
             pelatihan,
-            dan agenda lingkungan.
+            dan kegiatan lingkungan yang akan dilaksanakan.
 
         </p>
 
@@ -59,7 +78,7 @@
 
 </section>
 
-<!-- FILTER -->
+{{-- ================= FILTER ================= --}}
 
 <section
     class="relative z-20 -mt-24 pb-16"
@@ -71,7 +90,7 @@
 
         <form
             method="GET"
-            class="rounded-[30px] border border-slate-100 bg-white p-7 shadow-2xl"
+            class="rounded-[32px] border border-slate-100 bg-white p-8 shadow-2xl"
         >
 
             <div
@@ -82,9 +101,17 @@
                     class="lg:col-span-9"
                 >
 
+                    <label
+                        class="mb-2 block text-sm font-semibold text-slate-600"
+                    >
+
+                        Status Jadwal
+
+                    </label>
+
                     <select
                         name="status"
-                        class="w-full rounded-2xl border p-5"
+                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 transition focus:border-green-500 focus:ring-green-500"
                     >
 
                         <option value="">
@@ -116,12 +143,14 @@
                 </div>
 
                 <div
-                    class="lg:col-span-3"
+                    class="flex items-end lg:col-span-3"
                 >
 
                     <button
-                        class="w-full rounded-2xl bg-green-600 p-5 text-lg font-bold text-white hover:bg-green-700"
+                        class="w-full rounded-2xl bg-gradient-to-r from-green-600 to-emerald-500 p-4 text-lg font-bold text-white shadow-lg transition hover:scale-[1.02] hover:shadow-xl"
                     >
+
+                        <i class="fa-solid fa-filter mr-2"></i>
 
                         Filter
 
@@ -137,222 +166,294 @@
 
 </section>
 
-<!-- TIMELINE -->
+{{-- ================= LIST JADWAL ================= --}}
 
 <section
     class="pb-24"
 >
 
     <div
-        class="mx-auto max-w-5xl px-6"
+        class="mx-auto max-w-7xl px-6"
     >
 
         <div
-            class="mb-12"
+            class="mb-12 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between"
         >
 
-            <h2
-                class="text-4xl font-bold text-slate-800"
-            >
+            <div>
 
-                Agenda Terjadwal
+                <h2
+                    class="text-4xl font-bold text-slate-800"
+                >
 
-            </h2>
+                    Agenda Terjadwal
 
-            <p
-                class="mt-3 text-slate-500"
-            >
+                </h2>
 
-                {{ $schedules->total() }} Jadwal
+                <p
+                    class="mt-2 text-slate-500"
+                >
 
-            </p>
+                    Total
+                    <span class="font-bold text-green-600">
 
-        </div>
-
-        <div
-            class="relative border-l-4 border-green-500 pl-10"
-        ></div>
-@forelse($schedules as $schedule)
-
-    <div
-        class="relative mb-12"
-        data-aos="fade-up"
-    >
-
-        {{-- Timeline Dot --}}
-
-        <div
-            class="absolute -left-[54px] top-5 flex h-8 w-8 items-center justify-center rounded-full bg-green-600 ring-8 ring-slate-50"
-        >
-
-            <i
-                class="fa-solid fa-calendar-days text-sm text-white"
-            ></i>
-
-        </div>
-
-        {{-- Card --}}
-
-        <div
-            class="rounded-3xl bg-white p-8 shadow-lg transition hover:shadow-xl"
-        >
-
-            <div
-                class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
-            >
-
-                <div>
-
-                    <span
-                        class="rounded-full bg-green-100 px-4 py-2 text-xs font-semibold text-green-700"
-                    >
-
-                        {{ $schedule->hari }}
+                        {{ $schedules->total() }}
 
                     </span>
 
-                    <h3
-                        class="mt-5 text-2xl font-bold text-slate-800"
-                    >
+                    jadwal kegiatan.
 
-                        {{ $schedule->judul }}
-
-                    </h3>
-
-                </div>
-
-                <span
-                    class="rounded-full
-                    {{ $schedule->status=='Aktif'
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-slate-200 text-slate-700'
-                    }}
-                    px-5 py-2 text-sm font-semibold"
-                >
-
-                    {{ $schedule->status }}
-
-                </span>
+                </p>
 
             </div>
-
-            <div
-                class="mt-6 grid gap-4 md:grid-cols-3"
-            >
-
-                <div>
-
-                    <div
-                        class="text-sm text-slate-500"
-                    >
-
-                        Tanggal
-
-                    </div>
-
-                    <div
-                        class="mt-2 font-semibold"
-                    >
-
-                        {{ \Carbon\Carbon::parse($schedule->tanggal)->translatedFormat('d F Y') }}
-
-                    </div>
-
-                </div>
-
-                <div>
-
-                    <div
-                        class="text-sm text-slate-500"
-                    >
-
-                        Jam
-
-                    </div>
-
-                    <div
-                        class="mt-2 font-semibold"
-                    >
-
-                        {{ \Carbon\Carbon::parse($schedule->jam)->format('H:i') }} WIB
-
-                    </div>
-
-                </div>
-
-                <div>
-
-                    <div
-                        class="text-sm text-slate-500"
-                    >
-
-                        Lokasi
-
-                    </div>
-
-                    <div
-                        class="mt-2 font-semibold"
-                    >
-
-                        {{ $schedule->lokasi }}
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            @if($schedule->keterangan)
-
-                <div
-                    class="mt-6 rounded-2xl bg-slate-50 p-5 leading-8 text-slate-600"
-                >
-
-                    {{ $schedule->keterangan }}
-
-                </div>
-
-            @endif
 
         </div>
 
-    </div>
+        <div
+            class="grid gap-8 sm:grid-cols-2 xl:grid-cols-3"
+        >
+
+            @forelse($schedules as $schedule)
+        <div
+            class="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-green-300 hover:shadow-2xl"
+            data-aos="fade-up"
+        >
+
+            {{-- Header Card --}}
+            <div
+                class="relative overflow-hidden bg-gradient-to-r from-green-600 via-emerald-500 to-lime-500 p-6 text-white"
+            >
+
+                <div
+                    class="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10"
+                ></div>
+
+                <div
+                    class="absolute -bottom-10 -left-10 h-24 w-24 rounded-full bg-white/10"
+                ></div>
+
+                <div
+                    class="relative flex items-start justify-between gap-3"
+                >
+
+                    <div>
+
+                        <span
+                            class="inline-flex items-center rounded-full bg-white/20 px-3 py-1 text-xs font-semibold backdrop-blur"
+                        >
+
+                            <i class="fa-solid fa-calendar-day mr-2"></i>
+
+                            {{ $schedule->hari }}
+
+                        </span>
+
+                        <h3
+                            class="mt-4 text-2xl font-bold leading-snug"
+                        >
+
+                            {{ $schedule->judul }}
+
+                        </h3>
+
+                    </div>
+
+                    <span
+                        class="rounded-full px-4 py-2 text-xs font-bold shadow
+                        {{ $schedule->status == 'Aktif'
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-slate-100 text-slate-700'
+                        }}"
+                    >
+
+                        {{ $schedule->status }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            {{-- Body --}}
+            <div
+                class="space-y-5 p-6"
+            >
+
+                {{-- Tanggal --}}
+                <div
+                    class="flex items-center gap-4"
+                >
+
+                    <div
+                        class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-100 text-green-600"
+                    >
+
+                        <i class="fa-solid fa-calendar"></i>
+
+                    </div>
+
+                    <div>
+
+                        <p
+                            class="text-xs uppercase tracking-wide text-slate-400"
+                        >
+
+                            Tanggal
+
+                        </p>
+
+                        <p
+                            class="font-semibold text-slate-700"
+                        >
+
+                            {{ \Carbon\Carbon::parse($schedule->tanggal)->translatedFormat('d F Y') }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                {{-- Jam --}}
+                <div
+                    class="flex items-center gap-4"
+                >
+
+                    <div
+                        class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-600"
+                    >
+
+                        <i class="fa-solid fa-clock"></i>
+
+                    </div>
+
+                    <div>
+
+                        <p
+                            class="text-xs uppercase tracking-wide text-slate-400"
+                        >
+
+                            Jam
+
+                        </p>
+
+                        <p
+                            class="font-semibold text-slate-700"
+                        >
+
+                            {{ \Carbon\Carbon::parse($schedule->jam)->format('H:i') }} WIB
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                {{-- Lokasi --}}
+                <div
+                    class="flex items-center gap-4"
+                >
+
+                    <div
+                        class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-100 text-orange-600"
+                    >
+
+                        <i class="fa-solid fa-location-dot"></i>
+
+                    </div>
+
+                    <div>
+
+                        <p
+                            class="text-xs uppercase tracking-wide text-slate-400"
+                        >
+
+                            Lokasi
+
+                        </p>
+
+                        <p
+                            class="font-semibold text-slate-700"
+                        >
+
+                            {{ $schedule->lokasi }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                {{-- Keterangan --}}
+                @if($schedule->keterangan)
+
+                <div
+                    class="rounded-2xl border border-slate-100 bg-slate-50 p-4"
+                >
+
+                    <div
+                        class="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700"
+                    >
+
+                        <i class="fa-solid fa-circle-info text-green-600"></i>
+
+                        Keterangan
+
+                    </div>
+
+                    <div
+                        class="prose prose-sm max-w-none text-slate-600"
+                    >
+
+                        {!! \Illuminate\Support\Str::limit(strip_tags($schedule->keterangan), 180) !!}
+
+                    </div>
+
+                </div>
+
+                @endif
+
+            </div>
+
+        </div>
 
 @empty
 
+<div
+    class="col-span-full"
+>
+
     <div
-        class="flex min-h-[400px] items-center justify-center rounded-3xl bg-white shadow-lg"
+        class="flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm"
+        data-aos="zoom-in"
     >
 
-        <div class="text-center">
-
-            <div
-                class="text-8xl"
-            >
-
-                📅
-
-            </div>
-
-            <h3
-                class="mt-8 text-3xl font-bold"
-            >
-
-                Belum Ada Jadwal
-
-            </h3>
-
-            <p
-                class="mt-3 text-slate-500"
-            >
-
-                Jadwal kegiatan akan segera ditampilkan.
-
-            </p>
-
+        <div
+            class="flex h-28 w-28 items-center justify-center rounded-full bg-green-100 text-6xl"
+        >
+            📅
         </div>
 
+        <h3
+            class="mt-8 text-3xl font-bold text-slate-800"
+        >
+
+            Belum Ada Jadwal
+
+        </h3>
+
+        <p
+            class="mt-4 max-w-lg leading-7 text-slate-500"
+        >
+
+            Saat ini belum terdapat agenda kegiatan yang dapat ditampilkan.
+            Silakan kunjungi halaman ini kembali untuk melihat informasi jadwal terbaru.
+
+        </p>
+
     </div>
+
+</div>
 
 @endforelse
 
@@ -360,13 +461,19 @@
 
 @if($schedules->hasPages())
 
+<div
+    class="mt-16 flex justify-center"
+>
+
     <div
-        class="mt-16 flex justify-center"
+        class="rounded-2xl bg-white p-3 shadow-lg"
     >
 
         {{ $schedules->links() }}
 
     </div>
+
+</div>
 
 @endif
 
