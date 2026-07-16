@@ -67,6 +67,8 @@
             <a href="/jadwal" class="menu-link">Jadwal</a>
 
             <a href="/lapor" class="menu-link">Lapor</a>
+
+            <a href="#lapor" class="menu-link">Bank Sampah</a>
             <a
                 href="{{ route('login') }}"
                 class="rounded-xl bg-green-600 px-5 py-2 font-semibold text-white hover:bg-green-700"

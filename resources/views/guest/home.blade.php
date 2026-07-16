@@ -265,7 +265,7 @@
                 class="rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700"
             >
 
-                Tentang Kami
+                Sampahmu adalah Tanggung Jawabmu, Sampahku adalah Tanggung Jawabku!"
 
             </span>
 
@@ -281,11 +281,7 @@
                 class="mt-6 leading-8 text-slate-600"
             >
 
-                <strong>SIBERSIH</strong> merupakan Sistem Informasi Bank Sampah
-                yang membantu masyarakat memperoleh informasi mengenai
-                pengelolaan sampah, menemukan lokasi titik sampah,
-                mengikuti kegiatan lingkungan,
-                serta melaporkan permasalahan sampah secara cepat.
+                <strong>Warga Desa Talagasari</strong> , kini saatnya kita ambil bagian dalam menjaga bumi! 🌾✨ Telah hadir aplikasi Eco-Talagasari, wadah gotong-royong digital untuk mengelola limbah rumah tangga. Lewat aplikasi ini, kamu bisa belajar cara bikin kompos, menyetor sampah ke Bank Sampah terdekat, hingga melaporkan area yang kurang bersih. Yuk, unduh sekarang dan jadilah pahlawan lingkungan di desa kita!
 
             </p>
 

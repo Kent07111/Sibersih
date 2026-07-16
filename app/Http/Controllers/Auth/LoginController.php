@@ -13,7 +13,12 @@ class LoginController extends Controller
     public function index()
     {
         if (Auth::check()) {
-            return redirect('/dashboard');
+
+            if (Auth::user()->role == 'admin') {
+                return redirect('/dashboard');
+            }
+
+            return redirect('/user/dashboard');
         }
 
         return view('auth.login');
@@ -40,18 +45,19 @@ class LoginController extends Controller
                 ->with('error', 'Password salah');
         }
 
-        // Login menggunakan Auth Laravel
         Auth::login($user);
 
-        // Regenerate session untuk keamanan
         $request->session()->regenerate();
 
-        // Update last login
         $user->update([
             'last_login' => now(),
         ]);
 
-        return redirect('/dashboard');
+        if ($user->role == 'admin') {
+            return redirect('/dashboard');
+        }
+
+        return redirect('/user/dashboard');
     }
 
     public function logout(Request $request)

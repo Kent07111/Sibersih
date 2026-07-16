@@ -40,6 +40,97 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
 
+<style>
+.article-content{
+    line-height:1.8;
+    color:#334155;
+}
+
+.article-content p{
+    margin:1rem 0;
+}
+
+.article-content h1{
+    font-size:2.25rem;
+    font-weight:700;
+    margin:1.5rem 0 1rem;
+}
+
+.article-content h2{
+    font-size:1.8rem;
+    font-weight:700;
+    margin:1.5rem 0 1rem;
+}
+
+.article-content h3{
+    font-size:1.5rem;
+    font-weight:600;
+    margin:1.25rem 0 .75rem;
+}
+
+.article-content ul{
+    list-style:disc;
+    padding-left:2rem;
+    margin:1rem 0;
+}
+
+.article-content ol{
+    list-style:decimal;
+    padding-left:2rem;
+    margin:1rem 0;
+}
+
+.article-content li{
+    margin:.5rem 0;
+}
+
+.article-content img{
+    display:block;
+    max-width:100%;
+    height:auto;
+    margin:1.5rem auto;
+    border-radius:16px;
+}
+
+.article-content blockquote{
+    border-left:4px solid #16a34a;
+    padding-left:1rem;
+    color:#475569;
+    margin:1rem 0;
+    font-style:italic;
+}
+
+.article-content table{
+    width:100%;
+    border-collapse:collapse;
+    margin:1rem 0;
+}
+
+.article-content table th,
+.article-content table td{
+    border:1px solid #d1d5db;
+    padding:.75rem;
+}
+
+.article-content a{
+    color:#15803d;
+    text-decoration:underline;
+}
+
+.article-content code{
+    background:#f1f5f9;
+    padding:.2rem .4rem;
+    border-radius:4px;
+}
+
+.article-content pre{
+    background:#0f172a;
+    color:#fff;
+    padding:1rem;
+    border-radius:12px;
+    overflow:auto;
+}
+</style>
 </head>
 
 <body

@@ -8,15 +8,20 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EducationController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\RewardController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\WasteCategoryController;
+use App\Http\Controllers\Admin\WasteDepositApprovalController;
 use App\Http\Controllers\Admin\WastePointController;
+use App\Http\Controllers\Admin\WastePriceController;
 use App\Http\Controllers\Guest\ActivitygController;
 use App\Http\Controllers\Guest\EducationqController;
 use App\Http\Controllers\Guest\GallerygController;
 use App\Http\Controllers\Guest\HomeController;
 use App\Http\Controllers\Guest\ReportgController;
 use App\Http\Controllers\Guest\SchedulegController;
+use App\Http\Controllers\User\WasteDepositController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -82,8 +87,17 @@ Route::prefix('lapor')
 |--------------------------------------------------------------------------
 */
 
-
-Route::middleware('auth')->group(function () {
+Route::get('/phpinfo-test', function () {
+    dd([
+        'imagick' => extension_loaded('imagick'),
+        'gd' => extension_loaded('gd'),
+        'driver' => extension_loaded('imagick') ? 'Imagick' : 'GD',
+    ]);
+});
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::resource('waste-categories',WasteCategoryController::class);
+    Route::resource('waste-prices', WastePriceController::class);
+    Route::resource('rewards', RewardController::class);
     Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::post('/admin/education/upload-image',[App\Http\Controllers\Admin\EducationController::class, 'uploadImage'])->name('education.upload-image');
     Route::resource('waste-point', WastePointController::class);
@@ -96,4 +110,35 @@ Route::middleware('auth')->group(function () {
     Route::resource('gallery', GalleryController::class)->only(['index','show']);
     Route::resource('schedule',ScheduleController::class);
     Route::resource('settings',SettingController::class)->only(['index','store','update']);
+    Route::prefix('waste-deposits')->group(function () {
+
+        Route::get(
+            '/',[WasteDepositApprovalController::class,'index'])->name('waste-deposits.index');
+
+        Route::get('/{deposit}',[WasteDepositApprovalController::class,'show'])->name('waste-deposits.show');
+
+        Route::post('/{deposit}/approve',[WasteDepositApprovalController::class,'approve'])->name('waste-deposits.approve');
+
+        Route::post('/{deposit}/reject',[WasteDepositApprovalController::class,'reject'])->name('waste-deposits.reject');
+
+    });
+});
+
+Route::prefix('user')
+    ->middleware(['auth', 'user'])
+    ->group(function () {
+    Route::get(
+        '/my-deposits',
+        [WasteDepositController::class,'index']
+    )->name('my-deposits.index');
+
+    Route::get(
+        '/my-deposits/create',
+        [WasteDepositController::class,'create']
+    )->name('my-deposits.create');
+
+    Route::post(
+        '/my-deposits',
+        [WasteDepositController::class,'store']
+    )->name('my-deposits.store');
 });

@@ -23,7 +23,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             AdminSeeder::class,
-            SettingSeeder::class
+            SettingSeeder::class,
+            WasteCategorySeeder::class,
+            WastePriceSeeder::class,
+            RewardSeeder::class,
         ]);
     }
 }

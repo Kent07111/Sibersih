@@ -290,12 +290,76 @@
 
 @push('scripts')
 
+<script src="https://cdn.tiny.cloud/1/4jrzzsgk6khdvn5i43u7wbrxotg20bhraoc2697y5s60qcr9/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 
 <script>
 
-ClassicEditor
-.create(document.querySelector('#editor'));
+tinymce.init({
 
+    selector:'#editor',
+
+    height:600,
+
+    menubar:true,
+
+    plugins:'image link table lists media code fullscreen preview wordcount',
+
+    toolbar:'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | image media link table | code fullscreen preview',
+
+    automatic_uploads:true,
+
+    // WAJIB
+    document_base_url: "{{ url('/') }}/",
+
+    relative_urls: false,
+
+    remove_script_host: true,
+
+    convert_urls: false,
+
+    file_picker_types:'image',
+
+file_picker_callback:function(callback){
+
+    const input=document.createElement('input');
+
+    input.type='file';
+
+    input.accept='image/*';
+
+    input.onchange=function(){
+
+        let file=this.files[0];
+
+        let formData=new FormData();
+
+        formData.append('file',file);
+
+        fetch("{{ route('education.upload-image') }}",{
+
+            method:'POST',
+
+            headers:{
+                'X-CSRF-TOKEN':'{{ csrf_token() }}'
+            },
+
+            body:formData
+
+        })
+        .then(res=>res.json())
+        .then(data=>{
+
+            callback(data.location);
+
+        });
+
+    };
+
+    input.click();
+
+}
+
+});
 document
 .getElementById("thumbnail")
 .addEventListener("change",function(e){
@@ -319,7 +383,11 @@ document
     reader.readAsDataURL(file);
 
 });
+document.querySelector("form").addEventListener("submit", function () {
 
+    tinymce.triggerSave();
+
+});
 document.getElementById("slug").addEventListener("input", function () {
 
     this.value = this.value

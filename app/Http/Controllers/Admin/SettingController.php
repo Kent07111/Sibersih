@@ -12,6 +12,7 @@ use App\Models\Education;
 use App\Models\Activity;
 use App\Models\Setting;
 use App\Models\WastePoint;
+use App\Services\ImageService;
 use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
@@ -129,90 +130,127 @@ class SettingController extends Controller
         return $this->saveSetting($request, $setting);
     }
 
-private function saveSetting(Request $request, Setting $setting = null)
-{
-    try {
+    private function saveSetting(Request $request, Setting $setting = null)
+    {
+        try {
 
-        $data = $request->validate([
-            'nama_desa'   => 'required|max:255',
-            'name'        => 'required|max:255',
-            'alamat'      => 'required',
-            'telepon'     => 'required|max:20',
-            'email'       => 'required|email',
+            $data = $request->validate([
+                'nama_desa'   => 'required|max:255',
+                'name'        => 'required|max:255',
+                'alamat'      => 'required',
+                'telepon'     => 'required|max:20',
+                'email'       => 'required|email',
 
-            'tentang'     => 'nullable',
+                'tentang'     => 'nullable',
 
-            'facebook'    => 'nullable|string|max:255',
-            'instagram'   => 'nullable|string|max:255',
-            'youtube'     => 'nullable|string|max:255',
+                'facebook'    => 'nullable|string|max:255',
+                'instagram'   => 'nullable|string|max:255',
+                'youtube'     => 'nullable|string|max:255',
 
-            'maps_embed'  => 'nullable',
+                'maps_embed'  => 'nullable',
 
 
-            'logo'        => 'nullable|image|max:2048',
-            'favicon'     => 'nullable|image|max:1024',
-            'banner'      => 'nullable|image|max:4096',
-            'hero_image'  => 'nullable|image|max:4096',
-        ]);
+                'logo'        => 'nullable|image|max:2048',
+                'favicon'     => 'nullable|image|max:1024',
+                'banner'      => 'nullable|image|max:4096',
+                'hero_image'  => 'nullable|image|max:4096',
+            ]);
 
-        if (!$setting) {
-            $setting = new Setting();
-        }
-
-        if ($request->hasFile('logo')) {
-
-            if ($setting->logo) {
-                Storage::disk('public')->delete($setting->logo);
+            if (!$setting) {
+                $setting = new Setting();
             }
 
-            $data['logo'] = $request->file('logo')->store('settings', 'public');
-        }
+            if ($request->hasFile('logo')) {
 
-        if ($request->hasFile('favicon')) {
+                $data['logo'] = ImageService::replace(
 
-            if ($setting->favicon) {
-                Storage::disk('public')->delete($setting->favicon);
+                    $request->file('logo'),
+
+                    $setting->logo,
+
+                    'settings'
+
+                );
+
             }
 
-            $data['favicon'] = $request->file('favicon')->store('settings', 'public');
+if ($request->hasFile('favicon')) {
+
+    $data['favicon'] = ImageService::replace(
+
+        $request->file('favicon'),
+
+        $setting->favicon,
+
+        'settings'
+
+    );
+
+}
+if ($request->hasFile('banner')) {
+
+    $data['banner'] = ImageService::replace(
+
+        $request->file('banner'),
+
+        $setting->banner,
+
+        'settings'
+
+    );
+
+}
+
+if ($request->hasFile('hero_image')) {
+
+    $data['hero_image'] = ImageService::replace(
+
+        $request->file('hero_image'),
+
+        $setting->hero_image,
+
+        'settings'
+
+    );
+
+}
+
+            $setting->fill($data);
+            $setting->save();
+
+            return back()->with('success', 'Setting berhasil disimpan.');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+
+            return back()
+                ->withErrors($e->validator)
+                ->withInput();
+
+        } catch (\Exception $e) {
+
+            return back()->with(
+                'error',
+                'Terjadi kesalahan : '.$e->getMessage()
+            );
+
         }
+    }
 
-        if ($request->hasFile('banner')) {
+    private function uploadWebp($file, $folder)
+    {
+        $manager = new ImageManager(new Driver());
 
-            if ($setting->banner) {
-                Storage::disk('public')->delete($setting->banner);
-            }
+        $image = $manager->read($file)
+            ->scaleDown(width: 1600)
+            ->toWebp(80);
 
-            $data['banner'] = $request->file('banner')->store('settings', 'public');
-        }
+        $filename = Str::uuid().'.webp';
 
-        if ($request->hasFile('hero_image')) {
-
-            if ($setting->hero_image) {
-                Storage::disk('public')->delete($setting->hero_image);
-            }
-
-            $data['hero_image'] = $request->file('hero_image')->store('settings', 'public');
-        }
-
-        $setting->fill($data);
-        $setting->save();
-
-        return back()->with('success', 'Setting berhasil disimpan.');
-
-    } catch (\Illuminate\Validation\ValidationException $e) {
-
-        return back()
-            ->withErrors($e->validator)
-            ->withInput();
-
-    } catch (\Exception $e) {
-
-        return back()->with(
-            'error',
-            'Terjadi kesalahan : '.$e->getMessage()
+        Storage::disk('public')->put(
+            $folder.'/'.$filename,
+            (string) $image
         );
 
+        return $folder.'/'.$filename;
     }
-}
 }

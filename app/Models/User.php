@@ -49,4 +49,33 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
+    public function wallet()
+    {
+        return $this->hasOne(UserWallet::class);
+    }
+
+    public function deposits()
+    {
+        return $this->hasMany(WasteDeposit::class);
+    }
+
+    public function validatedDeposits()
+    {
+        return $this->hasMany(WasteDeposit::class, 'admin_id');
+    }
+
+    public function rewardRedemptions()
+    {
+        return $this->hasMany(RewardRedemption::class);
+    }
+
+    public function approvedRedemptions()
+    {
+        return $this->hasMany(RewardRedemption::class, 'admin_id');
+    }
 }

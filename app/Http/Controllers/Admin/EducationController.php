@@ -9,6 +9,39 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 class EducationController extends Controller
 {
+
+    private function getContentImages($html)
+    {
+        preg_match_all('/<img[^>]+src="([^"]+)"/i', $html, $matches);
+
+        return collect($matches[1] ?? [])
+            ->map(function ($url) {
+
+                $path = parse_url($url, PHP_URL_PATH);
+
+                return ltrim($path, '/');
+
+            })
+            ->toArray();
+    }
+
+    private function deleteUnusedImages($oldHtml, $newHtml)
+    {
+        $oldImages = $this->getContentImages($oldHtml);
+
+        $newImages = $this->getContentImages($newHtml);
+
+        foreach ($oldImages as $image) {
+
+            if (!in_array($image, $newImages)) {
+
+                Storage::disk('public')
+                    ->delete(str_replace('storage/', '', $image));
+
+            }
+
+        }
+    }
 public function index(Request $request)
 {
     $query = Education::query();
@@ -205,6 +238,12 @@ public function update(Request $request, Education $education)
 
     }
 
+    // $education->update($data);
+    $this->deleteUnusedImages(
+        $education->isi,
+        $request->isi
+    );
+
     $education->update($data);
 
     return redirect()
@@ -215,34 +254,50 @@ public function update(Request $request, Education $education)
     /**
      * Remove the specified resource from storage.
      */
+// public function uploadImage(Request $request)
+// {
+//     $request->validate([
+//         'file' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:4096',
+//     ]);
+
+//     $path = $request->file('file')
+//         ->store('education/content', 'public');
+
+//     return response()->json([
+//         'location' => asset('storage/' . $path)
+//     ]);
+// }
+
+
 public function uploadImage(Request $request)
 {
     $request->validate([
-        'file' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:4096',
+        'file' => 'required|image|max:4096'
     ]);
 
     $path = $request->file('file')
-        ->store('education/content', 'public');
+        ->store('education/content','public');
 
     return response()->json([
-        'location' => asset('storage/' . $path)
+        'location' => Storage::url($path)
     ]);
 }
-    public function destroy(Education $education)
+public function destroy(Education $education)
 {
-    if (
-        $education->thumbnail &&
-        Storage::disk('public')->exists($education->thumbnail)
-    ) {
+    foreach ($this->getContentImages($education->isi) as $image) {
+
+        Storage::disk('public')
+            ->delete(str_replace('storage/', '', $image));
+
+    }
+
+    if ($education->thumbnail) {
 
         Storage::disk('public')->delete($education->thumbnail);
 
     }
 
-    if (
-        $education->pdf &&
-        Storage::disk('public')->exists($education->pdf)
-    ) {
+    if ($education->pdf) {
 
         Storage::disk('public')->delete($education->pdf);
 
@@ -250,8 +305,9 @@ public function uploadImage(Request $request)
 
     $education->delete();
 
-    return redirect()
-        ->route('education.index')
-        ->with('success', 'Artikel berhasil dihapus.');
+    return back()->with(
+        'success',
+        'Artikel berhasil dihapus.'
+    );
 }
 }

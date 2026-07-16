@@ -2,6 +2,7 @@
     class="fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-slate-900 text-slate-200 shadow-2xl transition-transform duration-300 lg:relative lg:translate-x-0"
     :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
 >
+
     {{-- Header --}}
     <div class="flex h-20 items-center justify-between border-b border-slate-800 px-6">
 
@@ -15,7 +16,6 @@
             </p>
         </div>
 
-        {{-- Close Mobile --}}
         <button
             @click="sidebarOpen = false"
             class="rounded-lg p-2 hover:bg-slate-800 lg:hidden"
@@ -41,69 +41,164 @@
     {{-- Menu --}}
     <nav class="flex-1 overflow-y-auto px-4 py-6">
 
+        {{-- ================= GENERAL ================= --}}
+
         <p class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
             General
         </p>
 
         <a
-            href="/dashboard"
+            href="{{ url('/dashboard') }}"
             class="mb-2 flex items-center gap-3 rounded-xl bg-green-600 px-4 py-3 font-medium text-white transition hover:bg-green-500"
         >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 10.5L12 3l9 7.5v9a1.5 1.5 0 01-1.5 1.5H4.5A1.5 1.5 0 013 19.5z"/>
+            <svg xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor">
+
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 10.5L12 3l9 7.5v9a1.5 1.5 0 01-1.5 1.5H4.5A1.5 1.5 0 013 19.5z"
+                />
+
             </svg>
 
             Dashboard
         </a>
 
+        {{-- ================= MASTER DATA ================= --}}
+
         <p class="mb-3 mt-8 px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
             Master Data
         </p>
 
-@php
-    $menus = [
-        [
-            'title' => 'Titik Sampah',
-            'route' => 'waste-point.index',
-        ],
-        [
-            'title' => 'Edukasi',
-            'route' => 'education.index',
-        ],
-        [
-            'title' => 'Kegiatan',
-            'route' => 'activity.index',
-        ],
-        [
-            'title' => 'Galeri',
-            'route' => 'gallery.index',
-        ],
-        [
-            'title' => 'Agenda',
-            'route' => 'schedule.index',
-        ],
-        // menu lainnya...
-    ];
-@endphp
+        @php
+            $menus = [
 
-@foreach ($menus as $menu)
-    <a
-        href="{{ route($menu['route']) }}"
-        class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800"
-    >
-        <div class="h-2 w-2 rounded-full bg-green-500"></div>
+                [
+                    'title' => 'Titik Sampah',
+                    'route' => 'waste-point.index',
+                    'color' => 'bg-green-500',
+                ],
 
-        {{ $menu['title'] }}
-    </a>
-@endforeach
+                [
+                    'title' => 'Edukasi',
+                    'route' => 'education.index',
+                    'color' => 'bg-green-500',
+                ],
+
+                [
+                    'title' => 'Kegiatan',
+                    'route' => 'activity.index',
+                    'color' => 'bg-green-500',
+                ],
+
+                [
+                    'title' => 'Galeri',
+                    'route' => 'gallery.index',
+                    'color' => 'bg-green-500',
+                ],
+
+                [
+                    'title' => 'Agenda',
+                    'route' => 'schedule.index',
+                    'color' => 'bg-green-500',
+                ],
+
+            ];
+        @endphp
+
+        @foreach ($menus as $menu)
+
+            <a
+                href="{{ route($menu['route']) }}"
+                class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800"
+            >
+
+                <div class="h-2 w-2 rounded-full {{ $menu['color'] }}"></div>
+
+                {{ $menu['title'] }}
+
+            </a>
+
+        @endforeach
+
+
+        {{-- ================= BANK SAMPAH ================= --}}
+
+        <p class="mb-3 mt-8 px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
+            Bank Sampah
+        </p>
+
+        @php
+            $bankMenus = [
+
+                [
+                    'title' => 'Kategori Sampah',
+                    'route' => 'waste-categories.index',
+                    'color' => 'bg-green-500',
+                ],
+
+                [
+                    'title' => 'Harga Sampah',
+                    'route' => 'waste-prices.index',
+                    'color' => 'bg-emerald-500',
+                ],
+
+                [
+                    'title' => 'Reward',
+                    'route' => 'waste-categories.index',
+                    'color' => 'bg-yellow-500',
+                ],
+
+                [
+                    'title' => 'Setoran Sampah',
+                    'route' => 'waste-deposits.index',
+                    'color' => 'bg-blue-500',
+                ],
+
+                [
+                    'title' => 'Penukaran Reward',
+                    'route' => 'waste-categories.index',
+                    'color' => 'bg-purple-500',
+                ],
+
+                [
+                    'title' => 'Nasabah',
+                    'route' => 'waste-categories.index',
+                    'color' => 'bg-pink-500',
+                ],
+
+            ];
+        @endphp
+
+        @foreach ($bankMenus as $menu)
+
+            <a
+                href="{{ route($menu['route']) }}"
+                class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800"
+            >
+
+                <div class="h-2 w-2 rounded-full {{ $menu['color'] }}"></div>
+
+                {{ $menu['title'] }}
+
+            </a>
+
+        @endforeach
+
+
+        {{-- ================= PELAYANAN ================= --}}
 
         <p class="mb-3 mt-8 px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
             Pelayanan
         </p>
 
         <a
-            href="/report"
+            href="{{ url('/report') }}"
             class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800"
         >
             <div class="h-2 w-2 rounded-full bg-blue-500"></div>
@@ -112,13 +207,16 @@
         </a>
 
         <a
-            href="/setting/qr-center"
+            href="{{ url('/setting/qr-center') }}"
             class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800"
         >
             <div class="h-2 w-2 rounded-full bg-yellow-500"></div>
 
             QR Code
         </a>
+
+
+        {{-- ================= PENGATURAN ================= --}}
 
         <p class="mb-3 mt-8 px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
             Pengaturan
@@ -134,7 +232,7 @@
         </a>
 
         <a
-            href="/settings"
+            href="{{ url('/settings') }}"
             class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800"
         >
             <div class="h-2 w-2 rounded-full bg-pink-500"></div>
@@ -148,7 +246,7 @@
     <div class="border-t border-slate-800 p-4">
 
         <a
-            href="/logout"
+            href="{{ url('/logout') }}"
             class="flex items-center justify-center rounded-xl bg-red-500 px-4 py-3 font-medium text-white transition hover:bg-red-600"
         >
             Logout

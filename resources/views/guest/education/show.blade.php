@@ -3,50 +3,94 @@
 @section('title',$education->judul)
 
 @section('content')
-
+<div
+    id="readingProgress"
+    class="fixed left-0 top-0 z-[999] h-1 bg-green-500 transition-all duration-150"
+    style="width:0%"
+></div>
 <!-- HERO -->
 
+{{-- ================= HERO ================= --}}
+
 <section
-    class="relative overflow-hidden bg-gradient-to-r from-green-800 via-green-600 to-green-500 pt-36 pb-24"
+    class="relative overflow-hidden pt-28"
 >
 
+    @if($education->thumbnail)
+
+        <img
+            src="{{ asset('storage/'.$education->thumbnail) }}"
+            class="absolute inset-0 h-full w-full object-cover"
+        >
+
+    @endif
+
     <div
-        class="mx-auto max-w-5xl px-6 text-center"
+        class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-green-800/80 to-green-700/70"
+    ></div>
+
+    <div
+        class="relative mx-auto flex min-h-[520px] max-w-7xl items-center px-6"
     >
 
-        <span
-            class="rounded-full bg-white/20 px-4 py-2 text-sm font-semibold text-white"
-        >
-
-            {{ $education->kategori }}
-
-        </span>
-
-        <h1
-            class="mt-8 text-5xl font-bold leading-tight text-white"
-        >
-
-            {{ $education->judul }}
-
-        </h1>
-
         <div
-            class="mt-8 flex items-center justify-center gap-6 text-green-100"
+            class="max-w-4xl text-white"
         >
 
-            <span>
+            <span
+                class="inline-flex rounded-full bg-white/20 px-5 py-2 text-sm font-semibold backdrop-blur"
+            >
 
-                📅
-                {{ $education->created_at->translatedFormat('d F Y') }}
-
-            </span>
-
-            <span>
-
-                📖
-                Edukasi Lingkungan
+                🌱 {{ $education->kategori }}
 
             </span>
+
+            <h1
+                class="mt-8 text-4xl font-extrabold leading-tight md:text-6xl"
+            >
+
+                {{ $education->judul }}
+
+            </h1>
+
+            <p
+                class="mt-6 max-w-3xl text-lg leading-8 text-green-100"
+            >
+
+                {{ $education->excerpt }}
+
+            </p>
+
+            <div
+                class="mt-10 flex flex-wrap gap-6 text-green-100"
+            >
+
+                <div
+                    class="rounded-xl bg-white/10 px-5 py-3 backdrop-blur"
+                >
+
+                    📅
+                    {{ $education->created_at->translatedFormat('d F Y') }}
+
+                </div>
+
+                <div
+                    class="rounded-xl bg-white/10 px-5 py-3 backdrop-blur"
+                >
+
+                    📖 Edukasi Lingkungan
+
+                </div>
+
+                <div
+                    class="rounded-xl bg-white/10 px-5 py-3 backdrop-blur"
+                >
+
+                    🌿 Desa Talagasari
+
+                </div>
+
+            </div>
 
         </div>
 
@@ -57,297 +101,531 @@
 <!-- CONTENT -->
 
 <section
-    class="bg-slate-50 py-20"
+    class="bg-gradient-to-b from-green-50 to-slate-100 py-20"
 >
 
     <div
-        class="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-3"
+        class="mx-auto max-w-7xl px-6"
     >
 
-        <!-- Artikel -->
+        {{-- Ringkasan --}}
 
         <div
-            class="lg:col-span-2"
+            class="mb-10 overflow-hidden rounded-3xl border border-green-200 bg-white shadow-lg"
         >
 
             <div
-                class="overflow-hidden rounded-3xl bg-white shadow-xl"
+                class="flex items-center gap-4 bg-green-600 px-8 py-5 text-white"
             >
 
-                @if($education->thumbnail)
-
-                    <img
-                        src="{{ asset('storage/'.$education->thumbnail) }}"
-                        class="h-[450px] w-full object-cover"
-                    >
-
-                @endif
-
                 <div
-                    class="p-10"
+                    class="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 text-2xl"
                 >
 
-                    {!! $education->isi !!}
+                    💡
+
+                </div>
+
+                <div>
+
+                    <h2
+                        class="text-xl font-bold"
+                    >
+
+                        Ringkasan Edukasi
+
+                    </h2>
+
+                    <p
+                        class="text-green-100"
+                    >
+
+                        Pahami poin utama sebelum membaca artikel.
+
+                    </p>
 
                 </div>
 
             </div>
 
-            {{-- Video --}}
+            <div
+                class="p-8"
+            >
 
-            @if($education->video_url)
-
-                <div
-                    class="mt-8 rounded-3xl bg-white p-8 shadow-xl"
+                <p
+                    class="text-lg leading-9 text-slate-700"
                 >
 
-                    <h2
-                        class="mb-6 text-2xl font-bold"
-                    >
+                    {{ $education->excerpt }}
 
-                        🎥 Video Edukasi
+                </p>
 
-                    </h2>
-
-                    <div
-                        class="aspect-video overflow-hidden rounded-2xl"
-                    >
-
-                        <iframe
-                            src="{{ $education->video_url }}"
-                            class="h-full w-full"
-                            allowfullscreen
-                        ></iframe>
-
-                    </div>
-
-                </div>
-
-            @endif
-
-            {{-- PDF --}}
-
-            @if($education->pdf)
-
-                <div
-                    class="mt-8 rounded-3xl bg-white p-8 shadow-xl"
-                >
-
-                    <h2
-                        class="mb-5 text-2xl font-bold"
-                    >
-
-                        📄 Materi PDF
-
-                    </h2>
-
-                    <a
-                        href="{{ asset('storage/'.$education->pdf) }}"
-                        target="_blank"
-                        class="inline-flex rounded-xl bg-red-600 px-6 py-4 font-semibold text-white hover:bg-red-700"
-                    >
-
-                        Download PDF
-
-                    </a>
-
-                </div>
-
-            @endif
+            </div>
 
         </div>
 
-        <!-- Sidebar -->
+        <div
+            class="grid gap-10 lg:grid-cols-3"
+        >
+{{-- ================= ARTIKEL ================= --}}
+
+<div
+    class="space-y-8 lg:col-span-2"
+>
+
+    {{-- Artikel --}}
+
+    <article
+        class="overflow-hidden rounded-3xl bg-white shadow-xl"
+    >
+
+        @if($education->thumbnail)
+
+            <div
+                class="relative"
+            >
+
+                <img
+                    src="{{ asset('storage/'.$education->thumbnail) }}"
+                    class="h-[450px] w-full object-cover transition duration-500 hover:scale-105"
+                >
+
+                <div
+                    class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-8"
+                >
+
+                    <span
+                        class="rounded-full bg-green-500 px-4 py-2 text-sm font-semibold text-white"
+                    >
+
+                        {{ $education->kategori }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        @endif
 
         <div
-            class="space-y-8"
+            class="article-content p-8 md:p-12"
+        >
+
+            {!! $education->isi !!}
+
+        </div>
+
+    </article>
+
+    {{-- ================= VIDEO ================= --}}
+
+    @if($education->video_url)
+
+        <div
+            class="overflow-hidden rounded-3xl bg-white shadow-xl"
         >
 
             <div
-                class="rounded-3xl bg-white p-8 shadow-xl"
+                class="border-b bg-green-600 px-8 py-5 text-white"
             >
 
                 <h2
                     class="text-2xl font-bold"
                 >
 
-                    Informasi
+                    🎥 Video Edukasi
 
                 </h2>
 
-                <div
-                    class="mt-6 space-y-4"
+                <p
+                    class="mt-2 text-green-100"
                 >
+
+                    Tonton video untuk memahami materi dengan lebih mudah.
+
+                </p>
+
+            </div>
+
+            <div
+                class="p-8"
+            >
+
+                <div
+                    class="aspect-video overflow-hidden rounded-2xl shadow-lg"
+                >
+
+                    <iframe
+                        src="{{ $education->video_url }}"
+                        class="h-full w-full"
+                        allowfullscreen
+                    ></iframe>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    @endif
+
+    {{-- ================= PDF ================= --}}
+
+    @if($education->pdf)
+
+        <div
+            class="rounded-3xl border border-red-200 bg-white shadow-xl"
+        >
+
+            <div
+                class="flex flex-col items-center gap-5 p-10 text-center md:flex-row md:text-left"
+            >
+
+                <div
+                    class="flex h-20 w-20 items-center justify-center rounded-3xl bg-red-100 text-5xl"
+                >
+
+                    📄
+
+                </div>
+
+                <div
+                    class="flex-1"
+                >
+
+                    <h2
+                        class="text-2xl font-bold text-slate-800"
+                    >
+
+                        Materi PDF
+
+                    </h2>
+
+                    <p
+                        class="mt-2 text-slate-500"
+                    >
+
+                        Unduh materi edukasi untuk dibaca secara offline.
+
+                    </p>
+
+                </div>
+
+                <a
+                    href="{{ asset('storage/'.$education->pdf) }}"
+                    target="_blank"
+                    class="rounded-2xl bg-red-600 px-8 py-4 font-semibold text-white transition hover:scale-105 hover:bg-red-700"
+                >
+
+                    Download PDF
+
+                </a>
+
+            </div>
+
+        </div>
+
+    @endif
+
+</div>
+{{-- ================= SIDEBAR ================= --}}
+
+<aside
+    class="space-y-8"
+>
+
+    <div
+        class="sticky top-28 space-y-8"
+    >
+
+        {{-- Informasi Artikel --}}
+
+        <div
+            class="overflow-hidden rounded-3xl bg-white shadow-xl"
+        >
+
+            <div
+                class="bg-gradient-to-r from-green-700 to-green-600 p-6 text-white"
+            >
+
+                <h2
+                    class="text-2xl font-bold"
+                >
+
+                    📘 Informasi Artikel
+
+                </h2>
+
+            </div>
+
+            <div
+                class="space-y-6 p-6"
+            >
+
+                <div
+                    class="flex items-center gap-4"
+                >
+
+                    <div
+                        class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-100 text-xl"
+                    >
+
+                        🌱
+
+                    </div>
 
                     <div>
 
-                        <strong>Kategori</strong>
+                        <p class="text-sm text-slate-500">
 
-                        <p class="mt-2">
+                            Kategori
+
+                        </p>
+
+                        <h3 class="font-bold">
 
                             {{ $education->kategori }}
 
-                        </p>
+                        </h3>
+
+                    </div>
+
+                </div>
+
+                <div
+                    class="flex items-center gap-4"
+                >
+
+                    <div
+                        class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-xl"
+                    >
+
+                        📅
 
                     </div>
 
                     <div>
 
-                        <strong>Dibuat</strong>
+                        <p class="text-sm text-slate-500">
 
-                        <p class="mt-2">
+                            Dipublikasikan
+
+                        </p>
+
+                        <h3 class="font-bold">
 
                             {{ $education->created_at->translatedFormat('d F Y') }}
 
+                        </h3>
+
+                    </div>
+
+                </div>
+
+                <div
+                    class="flex items-center gap-4"
+                >
+
+                    <div
+                        class="flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-100 text-xl"
+                    >
+
+                        ⏱️
+
+                    </div>
+
+                    <div>
+
+                        <p class="text-sm text-slate-500">
+
+                            Estimasi Membaca
+
                         </p>
+
+                        <h3 class="font-bold">
+
+                            {{ max(1, ceil(str_word_count(strip_tags($education->isi))/200)) }}
+                            Menit
+
+                        </h3>
 
                     </div>
 
                 </div>
 
             </div>
-            {{-- Artikel Terkait --}}
 
-            <div
-                class="rounded-3xl bg-white p-8 shadow-xl"
+        </div>
+
+        {{-- Bagikan --}}
+
+        <div
+            class="rounded-3xl bg-white p-6 shadow-xl"
+        >
+
+            <h2
+                class="mb-5 text-xl font-bold"
             >
 
-                <h2
-                    class="mb-6 text-2xl font-bold"
+                📲 Bagikan Edukasi
+
+            </h2>
+
+            <div
+                class="space-y-3"
+            >
+
+                <a
+                    href="https://wa.me/?text={{ urlencode(request()->fullUrl()) }}"
+                    target="_blank"
+                    class="flex items-center justify-center rounded-2xl bg-green-600 py-4 font-semibold text-white transition hover:scale-[1.02] hover:bg-green-700"
                 >
 
-                    Artikel Terkait
+                    WhatsApp
 
-                </h2>
+                </a>
 
-                <div
-                    class="space-y-6"
+                <a
+                    href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->fullUrl()) }}"
+                    target="_blank"
+                    class="flex items-center justify-center rounded-2xl bg-blue-600 py-4 font-semibold text-white transition hover:scale-[1.02] hover:bg-blue-700"
                 >
 
-                    @forelse($related as $item)
+                    Facebook
 
-                        <a
-                            href="{{ route('guest.education.show',$item) }}"
-                            class="flex gap-4 transition hover:opacity-80"
-                        >
+                </a>
 
-                            @if($item->thumbnail)
+                <a
+                    href="https://twitter.com/intent/tweet?url={{ urlencode(request()->fullUrl()) }}"
+                    target="_blank"
+                    class="flex items-center justify-center rounded-2xl bg-slate-900 py-4 font-semibold text-white transition hover:scale-[1.02]"
+                >
 
-                                <img
-                                    src="{{ asset('storage/'.$item->thumbnail) }}"
-                                    class="h-20 w-24 rounded-xl object-cover"
-                                >
+                    X (Twitter)
 
-                            @else
+                </a>
 
-                                <div
-                                    class="flex h-20 w-24 items-center justify-center rounded-xl bg-slate-100"
-                                >
+            </div>
 
-                                    📚
+        </div>
 
-                                </div>
+        {{-- Artikel Terkait --}}
 
-                            @endif
+        <div
+            class="rounded-3xl bg-white p-6 shadow-xl"
+        >
 
-                            <div>
+            <h2
+                class="mb-6 text-xl font-bold"
+            >
 
-                                <span
-                                    class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700"
-                                >
+                📚 Artikel Terkait
 
-                                    {{ $item->kategori }}
+            </h2>
 
-                                </span>
+            <div
+                class="space-y-5"
+            >
 
-                                <h3
-                                    class="mt-3 line-clamp-2 font-bold text-slate-800"
-                                >
+                @forelse($related as $item)
 
-                                    {{ $item->judul }}
+                    <a
+                        href="{{ route('guest.education.show',$item) }}"
+                        class="group flex gap-4 rounded-2xl p-2 transition hover:bg-slate-100"
+                    >
 
-                                </h3>
+                        @if($item->thumbnail)
+
+                            <img
+                                src="{{ asset('storage/'.$item->thumbnail) }}"
+                                class="h-20 w-24 rounded-xl object-cover transition group-hover:scale-105"
+                            >
+
+                        @else
+
+                            <div
+                                class="flex h-20 w-24 items-center justify-center rounded-xl bg-slate-200 text-2xl"
+                            >
+
+                                📚
 
                             </div>
 
-                        </a>
+                        @endif
 
-                    @empty
+                        <div>
 
-                        <p
-                            class="text-slate-500"
-                        >
+                            <span
+                                class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700"
+                            >
 
-                            Belum ada artikel terkait.
+                                {{ $item->kategori }}
 
-                        </p>
+                            </span>
 
-                    @endforelse
+                            <h3
+                                class="mt-3 line-clamp-2 font-bold text-slate-800 group-hover:text-green-700"
+                            >
 
-                </div>
+                                {{ $item->judul }}
+
+                            </h3>
+
+                        </div>
+
+                    </a>
+
+                @empty
+
+                    <p class="text-slate-500">
+
+                        Belum ada artikel terkait.
+
+                    </p>
+
+                @endforelse
 
             </div>
 
-            {{-- Share --}}
+        </div>
+
+        {{-- CTA --}}
+
+        <div
+            class="rounded-3xl bg-gradient-to-br from-green-700 via-green-600 to-lime-500 p-8 text-center text-white shadow-xl"
+        >
 
             <div
-                class="rounded-3xl bg-white p-8 shadow-xl"
+                class="text-5xl"
             >
 
-                <h2
-                    class="mb-6 text-2xl font-bold"
-                >
-
-                    Bagikan
-
-                </h2>
-
-                <div
-                    class="grid grid-cols-3 gap-4"
-                >
-
-                    <a
-                        href="https://wa.me/?text={{ urlencode(request()->fullUrl()) }}"
-                        target="_blank"
-                        class="rounded-xl bg-green-600 py-4 text-center font-bold text-white hover:bg-green-700"
-                    >
-
-                        WhatsApp
-
-                    </a>
-
-                    <a
-                        href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->fullUrl()) }}"
-                        target="_blank"
-                        class="rounded-xl bg-blue-600 py-4 text-center font-bold text-white hover:bg-blue-700"
-                    >
-
-                        Facebook
-
-                    </a>
-
-                    <a
-                        href="https://twitter.com/intent/tweet?url={{ urlencode(request()->fullUrl()) }}"
-                        target="_blank"
-                        class="rounded-xl bg-slate-800 py-4 text-center font-bold text-white hover:bg-black"
-                    >
-
-                        X
-
-                    </a>
-
-                </div>
+                🌍
 
             </div>
 
-            {{-- Tombol Kembali --}}
+            <h2
+                class="mt-5 text-2xl font-bold"
+            >
+
+                Mari Jaga Lingkungan
+
+            </h2>
+
+            <p
+                class="mt-4 leading-8 text-green-100"
+            >
+
+                Mulailah dari langkah kecil seperti memilah sampah, mengurangi plastik sekali pakai, dan menjaga kebersihan lingkungan sekitar.
+
+            </p>
 
             <a
                 href="{{ route('guest.education.index') }}"
-                class="block rounded-2xl bg-green-600 py-4 text-center text-lg font-semibold text-white transition hover:bg-green-700"
+                class="mt-8 inline-block rounded-2xl bg-white px-8 py-4 font-bold text-green-700 transition hover:scale-105"
             >
 
-                ← Kembali ke Edukasi
+                📖 Lihat Edukasi Lain
 
             </a>
 
@@ -355,6 +633,103 @@
 
     </div>
 
-</section>
+</aside>
+<button
+    id="backTop"
+    class="fixed bottom-8 right-8 hidden h-14 w-14 rounded-full bg-green-600 text-2xl text-white shadow-xl transition hover:scale-110 hover:bg-green-700"
+>
 
+    ↑
+
+</button>
+<div
+    id="imageViewer"
+    class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/90 p-10"
+>
+
+    <img
+        id="viewerImage"
+        class="max-h-full max-w-full rounded-2xl shadow-2xl"
+    >
+
+</div>
 @endsection
+@push('scripts')
+
+<script>
+
+window.addEventListener('scroll', () => {
+
+    const scrollTop = document.documentElement.scrollTop;
+
+    const scrollHeight =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight;
+
+    const progress = (scrollTop / scrollHeight) * 100;
+
+    document.getElementById('readingProgress')
+        .style.width = progress + '%';
+
+});
+const backTop = document.getElementById('backTop');
+
+window.addEventListener('scroll', () => {
+
+    if(window.scrollY > 400){
+
+        backTop.classList.remove('hidden');
+
+    }else{
+
+        backTop.classList.add('hidden');
+
+    }
+
+});
+
+backTop.onclick = () => {
+
+    window.scrollTo({
+
+        top:0,
+
+        behavior:'smooth'
+
+    });
+
+};
+document
+.querySelectorAll('.article-content img')
+.forEach(img=>{
+
+    img.onclick=function(){
+
+        document
+            .getElementById('viewerImage')
+            .src=this.src;
+
+        document
+            .getElementById('imageViewer')
+            .classList.remove('hidden');
+
+        document
+            .getElementById('imageViewer')
+            .classList.add('flex');
+
+    };
+
+});
+
+document
+.getElementById('imageViewer')
+.onclick=function(){
+
+    this.classList.remove('flex');
+
+    this.classList.add('hidden');
+
+};
+</script>
+
+@endpush

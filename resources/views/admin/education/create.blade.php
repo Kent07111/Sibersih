@@ -303,6 +303,15 @@ tinymce.init({
 
     automatic_uploads:true,
 
+    // PENTING
+    relative_urls:false,
+
+    remove_script_host:false,
+
+    convert_urls:false,
+
+    document_base_url:"{{ url('/') }}/",
+
     file_picker_types:'image',
 
     file_picker_callback:function(callback){
@@ -332,15 +341,12 @@ tinymce.init({
                 body:formData
 
             })
-
             .then(res=>res.json())
-
             .then(data=>{
 
-                callback(data.location);
+                callback(window.location.origin + data.location);
 
             })
-
             .catch(err=>{
 
                 console.error(err);

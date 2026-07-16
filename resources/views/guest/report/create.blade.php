@@ -337,6 +337,7 @@
                     id="foto"
                     name="foto"
                     accept="image/*"
+                    capture="environment"
                     class="w-full rounded-xl border p-4"
                 >
 
@@ -373,13 +374,13 @@
                 class="mt-10 text-center"
             >
 
-                <button
-                    class="rounded-2xl bg-red-600 px-10 py-4 text-lg font-bold text-white transition hover:bg-red-700"
-                >
-
-                    🚀 Kirim Laporan
-
-                </button>
+            <button
+                type="submit"
+                id="submitBtn"
+                class="rounded-2xl bg-red-600 px-10 py-4 text-lg font-bold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+                🚀 Kirim Laporan
+            </button>
 
             </div>
 
@@ -559,7 +560,33 @@ fotoInput.addEventListener('change', function (e) {
 
 
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
 
+    const form = document.querySelector('form');
+    let submitted = false;
+
+    form.addEventListener('submit', function (e) {
+
+        if (submitted) {
+            e.preventDefault();
+            return;
+        }
+
+        if (!form.checkValidity()) {
+            return;
+        }
+
+        submitted = true;
+
+        const btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.textContent = '⏳ Mengirim...';
+
+    });
+
+});
+</script>
 @endpush
 
 @endsection

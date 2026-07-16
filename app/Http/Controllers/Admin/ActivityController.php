@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use Illuminate\Http\Request;
+use App\Services\ImageService;
 use App\Models\ActivityImage;
 
 use Illuminate\Support\Facades\Storage;
@@ -96,9 +97,8 @@ public function store(Request $request)
 
         'status'     => 'required',
 
-        'thumbnail'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-
-        'gallery.*'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'thumbnail' => 'nullable|file|max:15360',
+        'gallery.*' => 'nullable|file|max:15360',
 
     ]);
 
@@ -106,9 +106,10 @@ public function store(Request $request)
 
     if ($request->hasFile('thumbnail')) {
 
-        $thumbnail = $request
-            ->file('thumbnail')
-            ->store('activity/thumbnail', 'public');
+    $thumbnail = ImageService::upload(
+        $request->file('thumbnail'),
+        'activity/thumbnail'
+    );
 
     }
 
@@ -142,16 +143,14 @@ public function store(Request $request)
 
         foreach ($request->file('gallery') as $image) {
 
-            $path = $image->store(
-                'activity/gallery',
-                'public'
-            );
-
             ActivityImage::create([
 
                 'activity_id' => $activity->id,
 
-                'gambar'      => $path
+                'gambar' => ImageService::upload(
+                    $image,
+                    'activity/gallery'
+                )
 
             ]);
 
