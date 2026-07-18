@@ -5,43 +5,48 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
-
+use Carbon\Carbon;
 class ScheduleController extends Controller
 {
-    public function index(Request $request)
-    {
-        $query = Schedule::query();
 
-        if ($request->filled('search')) {
 
-            $query->where(
-                'judul',
-                'like',
-                '%' . $request->search . '%'
-            );
+public function index(Request $request)
+{
+    $query = Schedule::query();
 
-        }
-
-        if ($request->filled('status')) {
-
-            $query->where(
-                'status',
-                $request->status
-            );
-
-        }
-
-        $schedules = $query
-            ->orderBy('tanggal')
-            ->orderBy('jam')
-            ->paginate(12)
-            ->withQueryString();
-
-        return view(
-            'admin.schedule.index',
-            compact('schedules')
-        );
+    if ($request->filled('search')) {
+        $query->where('judul', 'like', '%' . $request->search . '%');
     }
+
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    $today = Carbon::today()->toDateString();
+
+    $schedules = $query
+        ->orderByRaw("
+            CASE
+                WHEN tanggal >= ? THEN 0
+                ELSE 1
+            END
+        ", [$today])
+        ->orderByRaw("
+            CASE
+                WHEN tanggal >= ? THEN tanggal
+            END ASC
+        ", [$today])
+        ->orderByRaw("
+            CASE
+                WHEN tanggal < ? THEN tanggal
+            END DESC
+        ", [$today])
+        ->orderBy('jam', 'ASC')
+        ->paginate(12)
+        ->withQueryString();
+
+    return view('admin.schedule.index', compact('schedules'));
+}
 
     public function create()
     {

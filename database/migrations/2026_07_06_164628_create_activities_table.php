@@ -11,36 +11,36 @@ return new class extends Migration
      */
     public function up(): void
     {
-Schema::create('activities', function (Blueprint $table) {
+        Schema::create('activities', function (Blueprint $table) {
 
-    $table->id();
+            $table->id();
 
-    $table->string('judul');
+            $table->string('judul');
 
-    $table->string('slug')->unique();
+            $table->string('slug')->unique();
 
-    $table->string('thumbnail')->nullable();
+            $table->string('thumbnail')->nullable();
 
-    $table->string('kategori');
+            $table->string('kategori');
 
-    $table->date('tanggal');
+            $table->date('tanggal');
 
-    $table->string('lokasi');
+            $table->string('lokasi');
 
-    $table->longText('isi');
+            $table->longText('isi');
 
-    $table->enum('status',[
-        'Draft',
-        'Publish'
-    ])->default('Draft');
+            $table->enum('status',[
+                'Draft',
+                'Publish'
+            ])->default('Draft');
 
-    $table->foreignId('created_by')
-        ->constrained('users')
-        ->cascadeOnDelete();
+            $table->foreignId('created_by')
+                ->constrained('users')
+                ->cascadeOnDelete();
 
-    $table->timestamps();
+            $table->timestamps();
 
-});
+        });
     }
 
     /**

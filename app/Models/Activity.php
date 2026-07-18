@@ -46,6 +46,10 @@ class Activity extends Model
     {
         return $this->hasMany(ActivityImage::class);
     }
+    public function videos()
+    {
+        return $this->hasMany(ActivityVideo::class);
+    }
     public function getRouteKeyName()
     {
         return 'slug';

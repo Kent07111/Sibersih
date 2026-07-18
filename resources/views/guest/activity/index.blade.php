@@ -4,12 +4,15 @@
 
 @section('content')
 
+@php
+    use Illuminate\Support\Str;
+@endphp
+
 <!-- HERO -->
 
 <section
     class="relative overflow-hidden bg-gradient-to-r from-blue-700 via-cyan-600 to-sky-500 pt-36 pb-40"
 >
-
 
     <div class="absolute inset-0 opacity-10">
 
@@ -91,8 +94,11 @@
                             stroke-width="2"
                             viewBox="0 0 24 24"
                         >
+
                             <circle cx="11" cy="11" r="8"/>
+
                             <path d="m21 21-4.3-4.3"/>
+
                         </svg>
 
                         <input
@@ -107,10 +113,10 @@
 
                 </div>
 
-                <div class="lg:col-span-1">
+                <div>
 
                     <button
-                        class="w-full rounded-2xl bg-blue-600 p-5 font-bold text-white"
+                        class="w-full rounded-2xl bg-blue-600 p-5 font-bold text-white transition hover:bg-blue-700"
                     >
 
                         Cari
@@ -137,21 +143,15 @@
         class="mx-auto max-w-7xl px-6"
     >
 
-        <div
-            class="mb-10"
-        >
+        <div class="mb-10">
 
-            <h2
-                class="text-4xl font-bold text-slate-800"
-            >
+            <h2 class="text-4xl font-bold text-slate-800">
 
                 Semua Kegiatan
 
             </h2>
 
-            <p
-                class="mt-3 text-slate-500"
-            >
+            <p class="mt-3 text-slate-500">
 
                 {{ $activities->total() }} Kegiatan
 
@@ -159,19 +159,18 @@
 
         </div>
 
+        <!-- GRID -->
         <div
             class="grid grid-cols-1 gap-8 lg:grid-cols-2"
-        ></div>
+        >
 
 @forelse($activities as $activity)
-
     <article
         data-aos="fade-up"
-        class="group overflow-hidden rounded-3xl bg-white shadow-lg transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
+        class="group flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-lg transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
     >
 
         {{-- Thumbnail --}}
-
         <div class="relative overflow-hidden">
 
             @if($activity->thumbnail)
@@ -189,9 +188,7 @@
                 >
 
                     <span class="text-7xl">
-
                         📸
-
                     </span>
 
                 </div>
@@ -199,10 +196,7 @@
             @endif
 
             {{-- Status --}}
-
-            <div
-                class="absolute left-5 top-5"
-            >
+            <div class="absolute left-5 top-5">
 
                 <span
                     class="rounded-full bg-blue-600 px-4 py-2 text-xs font-semibold text-white"
@@ -215,22 +209,17 @@
             </div>
 
             {{-- Tanggal --}}
-
             <div
                 class="absolute right-5 top-5 rounded-2xl bg-white px-4 py-3 text-center shadow-lg"
             >
 
-                <div
-                    class="text-2xl font-bold text-blue-600"
-                >
+                <div class="text-2xl font-bold text-blue-600">
 
                     {{ \Carbon\Carbon::parse($activity->tanggal)->format('d') }}
 
                 </div>
 
-                <div
-                    class="text-xs uppercase text-slate-500"
-                >
+                <div class="text-xs uppercase text-slate-500">
 
                     {{ \Carbon\Carbon::parse($activity->tanggal)->format('M') }}
 
@@ -241,10 +230,7 @@
         </div>
 
         {{-- Content --}}
-
-        <div
-            class="flex flex-1 flex-col p-7"
-        >
+        <div class="flex flex-1 flex-col p-7">
 
             <h3
                 class="line-clamp-2 text-2xl font-bold text-slate-800"
@@ -259,28 +245,22 @@
             >
 
                 <p>
-
                     📍 {{ $activity->lokasi }}
-
                 </p>
 
                 <p>
-
                     🕒 {{ \Carbon\Carbon::parse($activity->tanggal)->translatedFormat('d F Y') }}
-
                 </p>
 
             </div>
 
             <p
-                class="mt-6 line-clamp-3 flex-1 leading-8 text-slate-600"
+                class="mt-6 flex-1 line-clamp-3 leading-8 text-slate-600"
             >
 
                 {{ Str::limit(strip_tags($activity->deskripsi),150) }}
 
             </p>
-
-            {{-- Footer --}}
 
             <div
                 class="mt-8 flex items-center justify-between border-t pt-5"
@@ -312,7 +292,6 @@
         </div>
 
     </article>
-
 @empty
 
     <div
@@ -328,7 +307,7 @@
         </div>
 
         <h3
-            class="mt-6 text-3xl font-bold"
+            class="mt-6 text-3xl font-bold text-slate-800"
         >
 
             Belum Ada Kegiatan
@@ -346,5 +325,38 @@
     </div>
 
 @endforelse
-</section>
 
+        </div>
+
+        <!-- Pagination -->
+
+        @if($activities->hasPages())
+
+            <div
+                class="mt-14 flex justify-center"
+            >
+
+                {{ $activities->links() }}
+
+            </div>
+
+        @endif
+
+    </div>
+
+</section>
+<div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+
+    @forelse($activities as $activity)
+
+        <article>
+            ...
+        </article>
+
+    @empty
+
+        ...
+
+    @endforelse
+
+</div>

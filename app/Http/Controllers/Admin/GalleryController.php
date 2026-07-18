@@ -6,45 +6,22 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use App\Models\ActivityImage;
+use App\Models\ActivityVideo;
 use Illuminate\Http\Request;
 
 class GalleryController extends Controller
 {
-    public function index(Request $request)
-    {
-        $query = ActivityImage::with('activity');
+public function index(Request $request)
+{
+    $images = ActivityImage::with('activity')->latest()->get();
 
-        if ($request->filled('activity')) {
+    $videos = ActivityVideo::with('activity')->latest()->get();
 
-            $query->where('activity_id', $request->activity);
-
-        }
-
-        if ($request->filled('search')) {
-
-            $query->whereHas('activity', function ($q) use ($request) {
-
-                $q->where('judul', 'like', '%' . $request->search . '%');
-
-            });
-
-        }
-
-        $images = $query
-            ->latest()
-            ->paginate(24)
-            ->withQueryString();
-
-        $activities = Activity::orderBy('judul')->get();
-
-        return view(
-            'admin.gallery.index',
-            compact(
-                'images',
-                'activities'
-            )
-        );
-    }
+    return view('admin.gallery.index', compact(
+        'images',
+        'videos'
+    ));
+}
 
     public function show(ActivityImage $gallery)
     {

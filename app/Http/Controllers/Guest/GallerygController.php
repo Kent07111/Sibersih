@@ -3,37 +3,44 @@
 namespace App\Http\Controllers\Guest;
 
 use App\Http\Controllers\Controller;
-use App\Models\Gallery;
+use App\Models\Activity;
+use App\Models\ActivityImage;
+use App\Models\ActivityVideo;
 use Illuminate\Http\Request;
 
 class GallerygController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Gallery::query();
+        $imageQuery = ActivityImage::with('activity');
+        $videoQuery = ActivityVideo::with('activity');
 
         if ($request->filled('kategori')) {
 
-            $query->where(
-                'kategori',
-                $request->kategori
-            );
+            $imageQuery->whereHas('activity', function ($q) use ($request) {
+                $q->where('kategori', $request->kategori);
+            });
+
+            $videoQuery->whereHas('activity', function ($q) use ($request) {
+                $q->where('kategori', $request->kategori);
+            });
 
         }
 
-        $galleries = $query
-            ->latest()
-            ->paginate(12)
-            ->withQueryString();
+        $images = $imageQuery->latest()->get();
 
-        $kategori = Gallery::select('kategori')
+        $videos = $videoQuery->latest()->get();
+
+        $kategori = Activity::select('kategori')
             ->distinct()
+            ->orderBy('kategori')
             ->pluck('kategori');
 
         return view(
             'guest.gallery.index',
             compact(
-                'galleries',
+                'images',
+                'videos',
                 'kategori'
             )
         );

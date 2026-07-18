@@ -4,7 +4,9 @@
 
 @section('content')
 
-<!-- HERO -->
+@php
+    use Illuminate\Support\Str;
+@endphp
 
 <section
     class="relative overflow-hidden bg-gradient-to-r from-purple-700 via-indigo-600 to-blue-600 pt-36 pb-40"
@@ -12,13 +14,21 @@
 
     <div class="absolute inset-0 opacity-10">
 
-        <div class="absolute left-10 top-16 text-8xl">📷</div>
+        <div class="absolute left-10 top-16 text-8xl">
+            📷
+        </div>
 
-        <div class="absolute right-16 top-20 text-7xl">🌿</div>
+        <div class="absolute right-16 top-20 text-7xl">
+            🎥
+        </div>
 
-        <div class="absolute bottom-10 left-1/3 text-8xl">♻️</div>
+        <div class="absolute bottom-10 left-1/3 text-8xl">
+            ♻️
+        </div>
 
-        <div class="absolute bottom-16 right-24 text-7xl">🌎</div>
+        <div class="absolute bottom-16 right-24 text-7xl">
+            🌎
+        </div>
 
     </div>
 
@@ -39,7 +49,7 @@
             class="mt-8 text-5xl font-extrabold text-white lg:text-6xl"
         >
 
-            Galeri Kegiatan Kkn Talagasari 2026
+            Galeri & Video Kegiatan KKN Talagasari 2026
 
         </h1>
 
@@ -58,8 +68,6 @@
     </div>
 
 </section>
-
-<!-- FILTER -->
 
 <section
     class="relative z-20 -mt-24 pb-16"
@@ -88,9 +96,7 @@
                     >
 
                         <option value="">
-
                             Semua Kategori
-
                         </option>
 
                         @foreach($kategori as $item)
@@ -132,147 +138,325 @@
 
 </section>
 
-<!-- GALLERY -->
-
 <section
     class="pb-24"
 >
 
-    <div
-        class="mx-auto max-w-7xl px-6"
+<div
+    class="mx-auto max-w-7xl px-6"
+    x-data="{ tab:'gallery' }"
+>
+
+<div
+    class="mb-10"
+>
+
+    <h2
+        class="text-4xl font-bold text-slate-800"
     >
 
-        <div
-            class="mb-10"
-        >
+        Dokumentasi
 
-            <h2
-                class="text-4xl font-bold text-slate-800"
-            >
+    </h2>
 
-                Semua Dokumentasi
-
-            </h2>
-
-            <p
-                class="mt-3 text-slate-500"
-            >
-
-                {{ $galleries->total() }} Foto
-
-            </p>
-
-        </div>
-
-        <div
-            class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4"
-        ></div>
-@forelse($galleries as $gallery)
-
-    <a
-        href="{{ asset('storage/'.$gallery->foto) }}"
-        data-fancybox="gallery"
-        data-caption="{{ $gallery->judul }}"
-        class="group relative overflow-hidden rounded-3xl shadow-lg"
-        data-aos="zoom-in"
+    <p
+        class="mt-3 text-slate-500"
     >
 
-        {{-- Foto --}}
+        {{ $images->count() }} Foto • {{ $videos->count() }} Video
 
-        <img
-            src="{{ asset('storage/'.$gallery->foto) }}"
-            alt="{{ $gallery->judul }}"
-            class="h-72 w-full object-cover transition duration-500 group-hover:scale-110"
-        >
-
-        {{-- Overlay --}}
-
-        <div
-            class="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/30 to-transparent p-5 opacity-0 transition duration-300 group-hover:opacity-100"
-        >
-
-            <span
-                class="mb-3 inline-block w-fit rounded-full bg-purple-600 px-3 py-1 text-xs font-semibold text-white"
-            >
-
-                {{ $gallery->kategori }}
-
-            </span>
-
-            <h3
-                class="line-clamp-2 text-lg font-bold text-white"
-            >
-
-                {{ $gallery->judul }}
-
-            </h3>
-
-            @if($gallery->deskripsi)
-
-                <p
-                    class="mt-2 line-clamp-2 text-sm text-slate-200"
-                >
-
-                    {{ $gallery->deskripsi }}
-
-                </p>
-
-            @endif
-
-        </div>
-
-    </a>
-
-@empty
-
-    <div
-        class="col-span-full flex min-h-[350px] items-center justify-center rounded-3xl bg-white shadow-lg"
-    >
-
-        <div class="text-center">
-
-            <div class="text-8xl">
-
-                📷
-
-            </div>
-
-            <h3
-                class="mt-6 text-3xl font-bold"
-            >
-
-                Belum Ada Galeri
-
-            </h3>
-
-            <p
-                class="mt-3 text-slate-500"
-            >
-
-                Dokumentasi akan segera ditambahkan.
-
-            </p>
-
-        </div>
-
-    </div>
-
-@endforelse
+    </p>
 
 </div>
 
-@if($galleries->hasPages())
+<div
+    class="mb-10 flex justify-center"
+>
 
     <div
-        class="mt-16 flex justify-center"
+        class="inline-flex rounded-2xl bg-slate-100 p-1"
     >
 
-        {{ $galleries->links() }}
+        <button
+            @click="tab='gallery'"
+            :class="tab=='gallery'
+                ? 'bg-purple-600 text-white'
+                : 'text-slate-700'"
+            class="rounded-xl px-6 py-3 font-semibold transition"
+        >
+
+            📷 Galeri
+
+        </button>
+
+        <button
+            @click="tab='video'"
+            :class="tab=='video'
+                ? 'bg-purple-600 text-white'
+                : 'text-slate-700'"
+            class="rounded-xl px-6 py-3 font-semibold transition"
+        >
+
+            🎥 Video
+
+        </button>
 
     </div>
 
-@endif
+</div>
+{{-- ================= GALERI ================= --}}
+
+<div
+    x-show="tab=='gallery'"
+    x-transition
+>
+
+    <div
+        class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4"
+    >
+
+        @forelse($images as $image)
+
+            <a
+                href="{{ asset('storage/'.$image->gambar) }}"
+                data-fancybox="gallery"
+                data-caption="{{ $image->activity->judul }}"
+                class="group relative overflow-hidden rounded-3xl shadow-lg"
+                data-aos="zoom-in"
+            >
+
+                {{-- Foto --}}
+
+                <img
+                    src="{{ asset('storage/'.$image->gambar) }}"
+                    alt="{{ $image->activity->judul }}"
+                    class="h-72 w-full object-cover transition duration-500 group-hover:scale-110"
+                >
+
+                {{-- Overlay --}}
+
+                <div
+                    class="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/30 to-transparent p-5 opacity-0 transition duration-300 group-hover:opacity-100"
+                >
+
+                    <span
+                        class="mb-3 inline-block w-fit rounded-full bg-purple-600 px-3 py-1 text-xs font-semibold text-white"
+                    >
+
+                        {{ $image->activity->kategori }}
+
+                    </span>
+
+                    <h3
+                        class="line-clamp-2 text-lg font-bold text-white"
+                    >
+
+                        {{ $image->activity->judul }}
+
+                    </h3>
+
+                    <p
+                        class="mt-2 line-clamp-2 text-sm text-slate-200"
+                    >
+
+                        {{ Str::limit(strip_tags($image->activity->isi),80) }}
+
+                    </p>
+
+                    <div
+                        class="mt-4 flex items-center justify-between text-xs text-slate-300"
+                    >
+
+                        <span>
+
+                            📍 {{ $image->activity->lokasi }}
+
+                        </span>
+
+                        <span>
+
+                            {{ \Carbon\Carbon::parse($image->activity->tanggal)->translatedFormat('d M Y') }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        @empty
+
+            <div
+                class="col-span-full flex min-h-[350px] items-center justify-center rounded-3xl bg-white shadow-lg"
+            >
+
+                <div
+                    class="text-center"
+                >
+
+                    <div
+                        class="text-8xl"
+                    >
+
+                        📷
+
+                    </div>
+
+                    <h3
+                        class="mt-6 text-3xl font-bold"
+                    >
+
+                        Belum Ada Foto
+
+                    </h3>
+
+                    <p
+                        class="mt-3 text-slate-500"
+                    >
+
+                        Dokumentasi foto akan segera ditambahkan.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        @endforelse
+
+    </div>
+
+</div>
+{{-- ================= VIDEO ================= --}}
+
+<div
+    x-show="tab=='video'"
+    x-transition
+>
+
+    <div
+        class="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
+    >
+
+        @forelse($videos as $video)
+
+            <div
+                class="overflow-hidden rounded-3xl bg-white shadow-lg transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
+                data-aos="zoom-in"
+            >
+
+                {{-- Video --}}
+
+                <video
+                    controls
+                    preload="metadata"
+                    class="h-72 w-full object-cover bg-black"
+                >
+
+                    <source
+                        src="{{ asset('storage/'.$video->video) }}"
+                        type="video/mp4"
+                    >
+
+                    Browser Anda tidak mendukung video.
+
+                </video>
+
+                {{-- Content --}}
+
+                <div
+                    class="space-y-4 p-6"
+                >
+
+                    <span
+                        class="inline-flex rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700"
+                    >
+
+                        {{ $video->activity->kategori }}
+
+                    </span>
+
+                    <h3
+                        class="line-clamp-2 text-xl font-bold text-slate-800"
+                    >
+
+                        {{ $video->activity->judul }}
+
+                    </h3>
+
+                    <p
+                        class="line-clamp-3 text-sm leading-7 text-slate-500"
+                    >
+
+                        {{ Str::limit(strip_tags($video->activity->isi),120) }}
+
+                    </p>
+
+                    <div
+                        class="flex items-center justify-between border-t pt-4 text-sm text-slate-500"
+                    >
+
+                        <span>
+
+                            📍 {{ $video->activity->lokasi }}
+
+                        </span>
+
+                        <span>
+
+                            {{ \Carbon\Carbon::parse($video->activity->tanggal)->translatedFormat('d M Y') }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        @empty
+
+            <div
+                class="col-span-full flex min-h-[350px] items-center justify-center rounded-3xl bg-white shadow-lg"
+            >
+
+                <div class="text-center">
+
+                    <div class="text-8xl">
+
+                        🎥
+
+                    </div>
+
+                    <h3
+                        class="mt-6 text-3xl font-bold"
+                    >
+
+                        Belum Ada Video
+
+                    </h3>
+
+                    <p
+                        class="mt-3 text-slate-500"
+                    >
+
+                        Video kegiatan akan segera ditambahkan.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        @endforelse
+
+    </div>
+
+</div>
 
 </div>
 
 </section>
+
+@endsection

@@ -393,47 +393,47 @@ const galleryInput = document.getElementById("gallery");
 
 const galleryPreview = document.getElementById("galleryPreview");
 
-galleryInput.addEventListener("change", function () {
+galleryInput.addEventListener("change", async function(){
 
-    galleryPreview.innerHTML = "";
+    galleryPreview.innerHTML="";
 
-    const files = Array.from(this.files);
+    const dt = new DataTransfer();
 
-    files.forEach((file, index) => {
+    for(const file of this.files){
 
-        if (!file.type.startsWith("image/")) return;
+        const newFile = await ImageUploader.process(file);
+
+        dt.items.add(newFile);
 
         const reader = new FileReader();
 
-        reader.onload = function (e) {
+        reader.onload=function(e){
 
-            const card = document.createElement("div");
+            const card=document.createElement("div");
 
-            card.className =
-                "relative overflow-hidden rounded-xl border bg-white shadow";
+            card.className="relative overflow-hidden rounded-xl border bg-white shadow";
 
-            card.innerHTML = `
-
+            card.innerHTML=`
                 <img
                     src="${e.target.result}"
                     class="h-40 w-full object-cover"
                 >
-
                 <div
-                    class="truncate border-t bg-white p-2 text-center text-xs"
+                    class="truncate border-t bg-white p-2 text-xs text-center"
                 >
-                    ${file.name}
+                    ${newFile.name}
                 </div>
-
             `;
 
             galleryPreview.appendChild(card);
 
         };
 
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(newFile);
 
-    });
+    }
+
+    this.files=dt.files;
 
 });
 // Slug
