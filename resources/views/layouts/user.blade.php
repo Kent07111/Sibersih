@@ -46,7 +46,7 @@
     class="bg-slate-50 text-slate-700"
 >
 
-    @include('user.partials.navbar')
+  
 
     <main>
 
