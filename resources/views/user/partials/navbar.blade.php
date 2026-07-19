@@ -52,11 +52,11 @@
                 Dashboard
             </a>
 
-            <a href="#" class="menu-link">
+            <a href="/user/profile" class="menu-link">
                 Profil
             </a>
 
-            <a href="#" class="menu-link">
+            <a href="/user/wallet" class="menu-link">
                 Wallet
             </a>
 
@@ -64,7 +64,7 @@
                 Setor Sampah
             </a>
 
-            <a href="#" class="menu-link">
+            <a href="/user/rewards" class="menu-link">
                 Reward
             </a>
 

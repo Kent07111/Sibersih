@@ -155,4 +155,10 @@ Route::prefix('user')
             '/my-redemptions',
             [RewarduController::class,'history']
         )->name('user.rewards.history');
+Route::get('/profile', function () {
+    return view('user.profile.index');
+});
+Route::get('/wallet', function () {
+    return view('user.wallet.index');
+});
 });
