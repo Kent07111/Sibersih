@@ -59,12 +59,13 @@
 
                 <div class="mt-10 flex gap-5">
 
-                    <button
-                        class="rounded-2xl bg-green-600 px-8 py-5 text-lg font-bold text-white shadow-xl">
+                    <a
+                        href="{{ route('my-deposits.create') }}"
+                        class="inline-flex items-center rounded-2xl bg-green-600 px-8 py-5 text-lg font-bold text-white shadow-xl transition hover:bg-green-700">
 
                         🌿 Setor Sampah Sekarang
 
-                    </button>
+                    </a>
 
                     <button
                         class="rounded-2xl border border-green-600 bg-white px-8 py-5 text-lg font-bold text-green-700">

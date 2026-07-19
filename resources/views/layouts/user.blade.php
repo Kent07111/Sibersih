@@ -42,82 +42,21 @@
 
 </head>
 
-<body
-    class="bg-slate-50 text-slate-700"
->
+<body class="bg-slate-100 text-slate-700">
 
     @include('user.partials.navbar')
 
-    <main>
+    <main class="pt-24 min-h-screen">
 
-        @yield('content')
+        <div class="mx-auto max-w-7xl px-6 py-8">
+
+            @yield('content')
+
+        </div>
 
     </main>
 
     @include('guest.partials.footer')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-
-    <script>
-
-        AOS.init({
-
-            duration:800,
-
-            once:true
-
-        });
-
-    </script>
-<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.js"></script>
-
-<script>
-
-Fancybox.bind("[data-fancybox='gallery']",{
-
-    Toolbar:{
-
-        display:[
-            "zoom",
-            "fullscreen",
-            "slideshow",
-            "thumbs",
-            "close"
-        ]
-
-    }
-
-});
-
-</script>
-@if(session('success'))
-
-<script>
-
-document.addEventListener('DOMContentLoaded', function () {
-
-    Swal.fire({
-
-        icon: 'success',
-
-        title: 'Berhasil',
-
-        text: '{{ session('success') }}',
-
-        confirmButtonColor: '#16a34a',
-
-        confirmButtonText: 'OK'
-
-    });
-
-});
-
-</script>
-
-@endif
-    @stack('scripts')
 
 </body>
 

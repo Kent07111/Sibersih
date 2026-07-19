@@ -1,15 +1,13 @@
 <nav
     x-data="{ open:false }"
     id="navbar"
-    class="fixed top-0 left-0 z-50 w-full transition-all duration-300
-    {{ request()->routeIs('guest.home') ? '' : 'navbar-scroll' }}"
+    class="fixed top-0 left-0 z-50 w-full bg-white shadow-md"
 >
-
     <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
 
         {{-- Logo --}}
         <a
-            href="{{ route('guest.home') }}"
+            href="#"
             class="flex items-center gap-3"
         >
 
@@ -31,12 +29,16 @@
 
             <div>
 
-                <h1 class="navbar-text text-xl font-bold text-white">
-                    {{ $setting->nama_desa ?? 'Tidak ada data' }}
+                <h1 class="text-xl font-bold text-slate-800">
+
+                    {{ $setting->nama_desa }}
+
                 </h1>
 
-                <p class="navbar-text text-xs text-white/80">
-                    {{ $setting->name }}
+                <p class="text-xs text-slate-500">
+
+                    Bank Sampah
+
                 </p>
 
             </div>
@@ -46,149 +48,51 @@
         {{-- Desktop Menu --}}
         <div class="hidden items-center gap-8 lg:flex">
 
-            @guest
+            <a href="#" class="menu-link">
+                Dashboard
+            </a>
 
-                <a href="{{ route('guest.home') }}" class="menu-link">
-                    Home
-                </a>
+            <a href="#" class="menu-link">
+                Profil
+            </a>
 
-                <a href="/edukasi" class="menu-link">
-                    Edukasi
-                </a>
+            <a href="#" class="menu-link">
+                Wallet
+            </a>
 
-                <a href="/kegiatan" class="menu-link">
-                    Kegiatan
-                </a>
+            <a href="#" class="menu-link">
+                Setor Sampah
+            </a>
 
-                <a href="/galeri" class="menu-link">
-                    Galeri
-                </a>
+            <a href="#" class="menu-link">
+                Reward
+            </a>
 
-                <a href="/jadwal" class="menu-link">
-                    Jadwal
-                </a>
+            <a href="#" class="menu-link">
+                Riwayat
+            </a>
 
-                <a href="/lapor" class="menu-link">
-                    Lapor
-                </a>
+            <form
+                action="#"
+                method="POST"
+            >
+                @csrf
 
-                <a
-                    href="{{ route('login') }}"
-                    class="menu-link"
+                <button
+                    type="submit"
+                    class="rounded-xl bg-red-500 px-5 py-2 font-semibold text-white hover:bg-red-600"
                 >
-                    Bank Sampah
-                </a>
+                    Logout
+                </button>
 
-                <a
-                    href="{{ route('login') }}"
-                    class="rounded-xl bg-green-600 px-5 py-2 font-semibold text-white hover:bg-green-700"
-                >
-                    Masuk Admin
-                </a>
-
-            @else
-
-                @if(Auth::user()->role == 'admin')
-
-                    <a href="{{ route('guest.home') }}" class="menu-link">
-                        Home
-                    </a>
-
-                    <a href="/edukasi" class="menu-link">
-                        Edukasi
-                    </a>
-
-                    <a href="/kegiatan" class="menu-link">
-                        Kegiatan
-                    </a>
-
-                    <a href="/galeri" class="menu-link">
-                        Galeri
-                    </a>
-
-                    <a href="/jadwal" class="menu-link">
-                        Jadwal
-                    </a>
-
-                    <a href="/lapor" class="menu-link">
-                        Lapor
-                    </a>
-
-                    <a
-                        href="/dashboard"
-                        class="menu-link"
-                    >
-                        Dashboard Admin
-                    </a>
-
-                @else
-
-                    <a
-                        href="#"
-                        class="menu-link"
-                    >
-                        Dashboard
-                    </a>
-
-                    <a
-                        href="#"
-                        class="menu-link"
-                    >
-                        Profil
-                    </a>
-
-                    <a
-                        href="#"
-                        class="menu-link"
-                    >
-                        Wallet
-                    </a>
-
-                    <a
-                        href="#"
-                        class="menu-link"
-                    >
-                        Setor
-                    </a>
-
-                    <a
-                        href="#"
-                        class="menu-link"
-                    >
-                        Reward
-                    </a>
-
-                    <a
-                        href="#"
-                        class="menu-link"
-                    >
-                        History
-                    </a>
-
-                @endif
-
-                <form
-                    action="#
-                    method="POST"
-                >
-                    @csrf
-
-                    <button
-                        class="font-semibold text-red-500 hover:text-red-600"
-                    >
-                        Logout
-                    </button>
-
-                </form>
-
-            @endguest
+            </form>
 
         </div>
 
         {{-- Mobile Button --}}
         <button
             @click="open=!open"
-            class="text-3xl text-white lg:hidden"
+            class="text-3xl text-slate-700 lg:hidden"
         >
             ☰
         </button>
@@ -204,118 +108,98 @@
 
         <div class="space-y-1 p-5">
 
-            @guest
+            <a
+                class="mobile-menu"
+                href="#"
+            >
+                Dashboard
+            </a>
 
-                <a class="mobile-menu" href="{{ route('guest.home') }}">
-                    Home
-                </a>
+            <a
+                class="mobile-menu"
+                href="#"
+            >
+                Profil
+            </a>
 
-                <a class="mobile-menu" href="/edukasi">
-                    Edukasi
-                </a>
+            <a
+                class="mobile-menu"
+                href="#"
+            >
+                Wallet
+            </a>
 
-                <a class="mobile-menu" href="/kegiatan">
-                    Kegiatan
-                </a>
+            <a
+                class="mobile-menu"
+                href="#"
+            >
+                Setor Sampah
+            </a>
 
-                <a class="mobile-menu" href="/galeri">
-                    Galeri
-                </a>
+            <a
+                class="mobile-menu"
+                href="#"
+            >
+                Reward
+            </a>
 
-                <a class="mobile-menu" href="/jadwal">
-                    Jadwal
-                </a>
+            <a
+                class="mobile-menu"
+                href="#"
+            >
+                Riwayat
+            </a>
 
-                <a class="mobile-menu" href="/lapor">
-                    Lapor
-                </a>
+            <form
+                action="#"
+                method="POST"
+            >
 
-                <a
-                    class="mobile-menu"
-                    href="{{ route('login') }}"
+                @csrf
+
+                <button
+                    type="submit"
+                    class="mobile-menu w-full text-left text-red-600"
                 >
-                    Bank Sampah
-                </a>
+                    Logout
+                </button>
 
-                <a
-                    href="{{ route('login') }}"
-                    class="mt-4 block rounded-xl bg-green-600 py-3 text-center font-semibold text-white"
-                >
-                    Masuk Admin
-                </a>
-
-            @else
-
-                @if(Auth::user()->role == 'admin')
-
-                    <a class="mobile-menu" href="/dashboard">
-                        Dashboard Admin
-                    </a>
-
-                @else
-
-                    <a
-                        class="mobile-menu"
-                        href="#"
-                    >
-                        Dashboard
-                    </a>
-
-                    <a
-                        class="mobile-menu"
-                        href="#"
-                    >
-                        Profil
-                    </a>
-
-                    <a
-                        class="mobile-menu"
-                        href="#"
-                    >
-                        Wallet
-                    </a>
-
-                    <a
-                        class="mobile-menu"
-                        href="#"
-                    >
-                        Setor
-                    </a>
-
-                    <a
-                        class="mobile-menu"
-                        href="#"
-                    >
-                        Reward
-                    </a>
-
-                    <a
-                        class="mobile-menu"
-                        href="#"
-                    >
-                        History
-                    </a>
-
-                @endif
-
-                <form
-                    action="#"
-                    method="POST"
-                >
-                    @csrf
-
-                    <button
-                        class="mobile-menu w-full text-left text-red-600"
-                    >
-                        Logout
-                    </button>
-
-                </form>
-
-            @endguest
+            </form>
 
         </div>
 
     </div>
 
 </nav>
+
+<style>
+
+.menu-link{
+
+    color:#334155;
+    font-weight:600;
+    transition:.3s;
+
+}
+
+.menu-link:hover{
+
+    color:#22c55e;
+
+}
+
+.mobile-menu{
+
+    display:block;
+    padding:12px;
+    border-radius:10px;
+
+}
+
+.mobile-menu:hover{
+
+    background:#f1f5f9;
+
+}
+
+</style>
