@@ -21,6 +21,7 @@ use App\Http\Controllers\Guest\GallerygController;
 use App\Http\Controllers\Guest\HomeController;
 use App\Http\Controllers\Guest\ReportgController;
 use App\Http\Controllers\Guest\SchedulegController;
+use App\Http\Controllers\User\UserDashboardController;
 use App\Http\Controllers\User\WasteDepositController;
 
 Route::get('/bank-sampah', function () {
@@ -132,7 +133,8 @@ Route::prefix('user')
         '/my-deposits/create',
         [WasteDepositController::class,'create']
     )->name('my-deposits.create');
-
+        Route::get('/dashboard', [UserDashboardController::class, 'index'])
+            ->name('dashboard');
     Route::post(
         '/my-deposits',
         [WasteDepositController::class,'store']

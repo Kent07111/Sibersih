@@ -19,7 +19,11 @@ class WasteCategory extends Model
     {
         return $this->hasMany(WastePrice::class, 'category_id');
     }
-
+public function activePrice()
+{
+    return $this->hasOne(WastePrice::class, 'category_id')
+        ->where('is_active', true);
+}
     public function stock()
     {
         return $this->hasOne(WasteStock::class, 'category_id');

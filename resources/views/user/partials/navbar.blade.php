@@ -48,7 +48,7 @@
         {{-- Desktop Menu --}}
         <div class="hidden items-center gap-8 lg:flex">
 
-            <a href="#" class="menu-link">
+            <a href="dashboard" class="menu-link">
                 Dashboard
             </a>
 
@@ -72,20 +72,12 @@
                 Riwayat
             </a>
 
-            <form
-                action="#"
-                method="POST"
+            <a
+                href="{{ url('/logout') }}"
+                class="rounded-xl bg-red-500 px-5 py-2 font-semibold text-white hover:bg-red-600"
             >
-                @csrf
-
-                <button
-                    type="submit"
-                    class="rounded-xl bg-red-500 px-5 py-2 font-semibold text-white hover:bg-red-600"
-                >
-                    Logout
-                </button>
-
-            </form>
+                Logout
+            </a>
 
         </div>
 

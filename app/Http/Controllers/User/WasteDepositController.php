@@ -16,14 +16,20 @@ class WasteDepositController extends Controller
 {
     public function create()
     {
-        $categories = WasteCategory::where('is_active',true)
+        $categories = WasteCategory::where('is_active', true)
+            ->with(['activePrice'])
             ->orderBy('name')
             ->get();
 
-        return view(
-            'user.deposits.create',
-            compact('categories')
-        );
+        $latestDeposits = WasteDeposit::where('user_id', auth()->id())
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('user.deposits.create', compact(
+            'categories',
+            'latestDeposits'
+        ));
     }
     public function index()
     {
