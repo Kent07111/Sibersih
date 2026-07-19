@@ -23,9 +23,11 @@ use App\Http\Controllers\Guest\ReportgController;
 use App\Http\Controllers\Guest\SchedulegController;
 use App\Http\Controllers\User\WasteDepositController;
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/bank-sampah', function () {
+    return view('guest.bank.index');
 });
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -87,13 +89,7 @@ Route::prefix('lapor')
 |--------------------------------------------------------------------------
 */
 
-Route::get('/phpinfo-test', function () {
-    dd([
-        'imagick' => extension_loaded('imagick'),
-        'gd' => extension_loaded('gd'),
-        'driver' => extension_loaded('imagick') ? 'Imagick' : 'GD',
-    ]);
-});
+
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('waste-categories',WasteCategoryController::class);
     Route::resource('waste-prices', WastePriceController::class);
