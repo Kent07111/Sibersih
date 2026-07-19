@@ -60,7 +60,7 @@
                 Wallet
             </a>
 
-            <a href="#" class="menu-link">
+            <a href="/user/my-deposits/create" class="menu-link">
                 Setor Sampah
             </a>
 
@@ -68,7 +68,7 @@
                 Reward
             </a>
 
-            <a href="#" class="menu-link">
+            <a href="/user/my-deposits" class="menu-link">
                 Riwayat
             </a>
 
