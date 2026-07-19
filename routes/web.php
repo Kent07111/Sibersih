@@ -21,6 +21,7 @@ use App\Http\Controllers\Guest\GallerygController;
 use App\Http\Controllers\Guest\HomeController;
 use App\Http\Controllers\Guest\ReportgController;
 use App\Http\Controllers\Guest\SchedulegController;
+use App\Http\Controllers\User\RewarduController;
 use App\Http\Controllers\User\UserDashboardController;
 use App\Http\Controllers\User\WasteDepositController;
 
@@ -139,4 +140,19 @@ Route::prefix('user')
         '/my-deposits',
         [WasteDepositController::class,'store']
     )->name('my-deposits.store');
+
+        Route::get(
+            '/rewards',
+            [RewarduController::class,'index']
+        )->name('user.rewards.index');
+
+        Route::post(
+            '/rewards/{reward}/redeem',
+            [RewarduController::class,'redeem']
+        )->name('user.rewards.redeem');
+
+        Route::get(
+            '/my-redemptions',
+            [RewarduController::class,'history']
+        )->name('user.rewards.history');
 });
