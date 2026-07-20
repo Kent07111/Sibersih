@@ -10,23 +10,41 @@
 >
 
     {{-- Header --}}
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
         <div>
 
             <h1 class="text-3xl font-bold text-slate-800">
-
                 Gallery
-
             </h1>
 
             <p class="mt-2 text-slate-500">
-
                 Dokumentasi seluruh kegiatan SIBERSIH.
-
             </p>
 
         </div>
+
+        <a
+            href="{{ route('gallery.create') }}"
+            class="inline-flex items-center justify-center rounded-xl bg-green-600 px-5 py-3 font-semibold text-white shadow transition hover:bg-green-700"
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="mr-2 h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4v16m8-8H4"
+                />
+            </svg>
+
+            Tambah Gallery
+        </a>
 
     </div>
 
@@ -84,96 +102,189 @@
 
     </form>
 
-    {{-- Gallery --}}
-    <div
-        class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-    >
+{{-- Gallery --}}
+<div
+    class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+>
 
-        @forelse($images as $image)
+    @forelse($gallery as $item)
 
-            <div
-                class="group overflow-hidden rounded-2xl bg-white shadow transition hover:shadow-xl"
-            >
+        <div
+            class="group relative overflow-hidden rounded-2xl bg-white shadow transition hover:-translate-y-1 hover:shadow-xl"
+        >
+        {{-- Tombol Hapus --}}
+        <div class="absolute right-3 top-3 z-30">
+
+            @if($item->type=='image')
+
+                <form
+                    action="{{ route('gallery.image.destroy', $item->id) }}"
+                    method="POST"
+                    onsubmit="return confirm('Yakin ingin menghapus foto ini?')"
+                >
+
+                    @csrf
+                    @method('DELETE')
+
+                    <button
+                        type="submit"
+                        class="flex h-10 w-10 items-center justify-center rounded-full bg-red-600 text-white shadow-lg transition hover:bg-red-700"
+                        title="Hapus Foto"
+                    >
+
+                        🗑
+
+                    </button>
+
+                </form>
+
+            @else
+
+                <form
+                    action="{{ route('gallery.video.destroy', $item->id) }}"
+                    method="POST"
+                    onsubmit="return confirm('Yakin ingin menghapus video ini?')"
+                >
+
+                    @csrf
+                    @method('DELETE')
+
+                    <button
+                        type="submit"
+                        class="flex h-10 w-10 items-center justify-center rounded-full bg-red-600 text-white shadow-lg transition hover:bg-red-700"
+                        title="Hapus Video"
+                    >
+
+                        🗑
+
+                    </button>
+
+                </form>
+
+            @endif
+
+        </div>
+            @if($item->type=='image')
 
                 <img
-                    src="{{ asset('storage/'.$image->gambar) }}"
+                    src="{{ asset('storage/'.$item->path) }}"
                     class="h-64 w-full cursor-pointer object-cover transition duration-300 group-hover:scale-105"
-                    @click="open(
-                        '{{ asset('storage/'.$image->gambar) }}',
-                        @js($image->activity->judul),
-                        @js($image->activity->lokasi),
-                        @js($image->activity->tanggal->format('d F Y')),
-                        @js(strip_tags($image->activity->isi))
+                    @click="openImage(
+                        '{{ asset('storage/'.$item->path) }}',
+                        @js($item->activity->judul),
+                        @js($item->activity->lokasi),
+                        @js($item->activity->tanggal->format('d F Y')),
+                        @js(strip_tags($item->activity->isi))
                     )"
                 >
 
-                <div class="space-y-2 p-4">
+            @else
 
-                    <h2
-                        class="line-clamp-1 text-lg font-bold"
-                    >
-
-                        {{ $image->activity->judul }}
-
-                    </h2>
-
-                    <p
-                        class="text-sm text-slate-500"
-                    >
-
-                        {{ $image->activity->tanggal->format('d F Y') }}
-
-                    </p>
-
-                    <p
-                        class="line-clamp-2 text-sm text-slate-600"
-                    >
-
-                        {{ Str::limit(strip_tags($image->activity->isi),80) }}
-
-                    </p>
-
-                </div>
-
-            </div>
-
-        @empty
-
-            <div
-                class="col-span-full rounded-2xl bg-white p-20 text-center shadow"
-            >
-
-                <div class="text-7xl">
-
-                    📷
-
-                </div>
-
-                <h2
-                    class="mt-5 text-2xl font-bold"
+                <div
+                    class="relative cursor-pointer"
+                    @click="openVideo(
+                        '{{ asset('storage/'.$item->path) }}',
+                        @js($item->activity->judul),
+                        @js($item->activity->lokasi),
+                        @js($item->activity->tanggal->format('d F Y')),
+                        @js(strip_tags($item->activity->isi))
+                    )"
                 >
 
-                    Gallery Kosong
+                    <video
+                        class="h-64 w-full object-cover"
+                        muted
+                        preload="metadata"
+                    >
+
+                        <source src="{{ asset('storage/'.$item->path) }}">
+
+                    </video>
+
+                    <div
+                        class="absolute inset-0 flex items-center justify-center bg-black/30"
+                    >
+
+                        <div
+                            class="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-3xl"
+                        >
+
+                            ▶
+
+                        </div>
+
+                    </div>
+
+                    <span
+                        class="absolute right-3 top-3 rounded-lg bg-red-600 px-3 py-1 text-xs font-bold text-white"
+                    >
+
+                        VIDEO
+
+                    </span>
+
+                </div>
+
+            @endif
+
+            <div class="space-y-2 p-4">
+
+                <h2 class="line-clamp-1 text-lg font-bold">
+
+                    {{ $item->activity->judul }}
 
                 </h2>
 
-                <p
-                    class="mt-2 text-slate-500"
-                >
+                <p class="text-sm text-slate-500">
 
-                    Belum ada dokumentasi kegiatan.
+                    {{ $item->activity->tanggal->format('d F Y') }}
+
+                </p>
+
+                <p class="line-clamp-2 text-sm text-slate-600">
+
+                    {{ Str::limit(strip_tags($item->activity->isi),80) }}
 
                 </p>
 
             </div>
 
-        @endforelse
+        </div>
 
-    </div>
+    @empty
+
+        <div
+            class="col-span-full rounded-2xl bg-white p-20 text-center shadow"
+        >
+
+            <div class="text-7xl">
+
+                📂
+
+            </div>
+
+            <h2 class="mt-4 text-2xl font-bold">
+
+                Gallery Masih Kosong
+
+            </h2>
+
+            <p class="mt-2 text-slate-500">
+
+                Belum ada foto ataupun video.
+
+            </p>
+
+        </div>
+
+    @endforelse
+
+</div>
+
 
     <div>
 
-        {{ $images->links() }}
+        {{-- Pagination --}}
 
     </div>
     {{-- Lightbox --}}
@@ -186,12 +297,13 @@
 
         <div
             @click.away="show=false"
+            @click.away="show=false;media='';"
             class="relative w-full max-w-6xl overflow-hidden rounded-2xl bg-white shadow-2xl"
         >
 
             {{-- Close --}}
             <button
-                @click="show=false"
+                @click="show=false;media='';"
                 class="absolute right-4 top-4 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-red-600 text-xl text-white hover:bg-red-700"
             >
 
@@ -201,13 +313,38 @@
 
             <div class="grid lg:grid-cols-2">
 
-                {{-- Image --}}
-                <div class="bg-slate-900">
+                {{-- Media --}}
+                <div class="flex items-center justify-center bg-slate-900">
 
-                    <img
-                        :src="image"
-                        class="h-[700px] w-full object-contain"
-                    >
+                    {{-- IMAGE --}}
+                    <template x-if="mediaType=='image'">
+
+                        <img
+                            :src="media"
+                            class="h-[700px] w-full object-contain"
+                        >
+
+                    </template>
+
+                    {{-- VIDEO --}}
+                    <template x-if="mediaType=='video'">
+
+                        <video
+                            x-show="mediaType=='video'"
+                            x-bind:key="media"
+                            controls
+                            autoplay
+                            playsinline
+                            class="h-[700px] w-full object-contain"
+                        >
+
+                            <source
+                                :src="media"
+                                type="video/mp4"
+                            >
+
+                        </video>
+                    </template>
 
                 </div>
 
@@ -265,7 +402,7 @@
                     <div class="flex gap-3">
 
                         <a
-                            :href="image"
+                            :href="media"
                             download
                             class="rounded-xl bg-green-600 px-6 py-3 font-semibold text-white hover:bg-green-700"
                         >
@@ -275,12 +412,12 @@
                         </a>
 
                         <a
-                            :href="image"
+                            :href="media"
                             target="_blank"
                             class="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
                         >
 
-                            Full Size
+                            Buka
 
                         </a>
 
@@ -308,7 +445,9 @@ function galleryApp(){
 
         show:false,
 
-        image:'',
+        media:'',
+
+        mediaType:'image',
 
         title:'',
 
@@ -318,11 +457,31 @@ function galleryApp(){
 
         description:'',
 
-        open(image,title,location,date,description){
+        openImage(media,title,location,date,description){
 
             this.show=true;
 
-            this.image=image;
+            this.mediaType='image';
+
+            this.media=media;
+
+            this.title=title;
+
+            this.location=location;
+
+            this.date=date;
+
+            this.description=description;
+
+        },
+
+        openVideo(media,title,location,date,description){
+
+            this.show=true;
+
+            this.mediaType='video';
+
+            this.media=media;
 
             this.title=title;
 

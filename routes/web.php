@@ -105,7 +105,16 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/setting/qr-center',[SettingController::class,'qrCenter'])->name('setting.qr-center');
     Route::post('/setting/qr-center',[SettingController::class,'generateQr'])->name('setting.generate-qr');
     Route::resource('report',ReportController::class)->only(['index','show','update','destroy']);
-    Route::resource('gallery', GalleryController::class)->only(['index','show']);
+    Route::delete(
+    'gallery/image/{image}',
+    [GalleryController::class, 'destroyImage']
+)->name('gallery.image.destroy');
+
+Route::delete(
+    'gallery/video/{video}',
+    [GalleryController::class, 'destroyVideo']
+)->name('gallery.video.destroy');
+    Route::resource('gallery', GalleryController::class);
     Route::resource('schedule',ScheduleController::class);
     Route::resource('settings',SettingController::class)->only(['index','store','update']);
     Route::prefix('waste-deposits')->group(function () {
