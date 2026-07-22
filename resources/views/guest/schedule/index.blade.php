@@ -47,7 +47,7 @@
 
             <i class="fa-solid fa-calendar-days"></i>
 
-            Agenda Bank Sampah
+            Agenda Kegiatan KKN Talagasari 2026
 
         </span>
 
@@ -109,36 +109,51 @@
 
                     </label>
 
-                    <select
-                        name="status"
-                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 transition focus:border-green-500 focus:ring-green-500"
-                    >
+<select
+    name="status"
+    class="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 transition focus:border-green-500 focus:ring-green-500"
+>
 
-                        <option value="">
+    <option value="">
+        Semua Status
+    </option>
 
-                            Semua Status
+    <option
+        value="Comming Soon"
+        @selected(request('status') == 'Comming Soon')
+    >
+        Comming Soon
+    </option>
 
-                        </option>
+    <option
+        value="Aktif"
+        @selected(request('status') == 'Aktif')
+    >
+        Aktif
+    </option>
 
-                        <option
-                            value="Aktif"
-                            @selected(request('status')=='Aktif')
-                        >
+    <option
+        value="Progress"
+        @selected(request('status') == 'Progress')
+    >
+        Progress
+    </option>
 
-                            Aktif
+    <option
+        value="Selesai"
+        @selected(request('status') == 'Selesai')
+    >
+        Selesai
+    </option>
 
-                        </option>
+    <option
+        value="Dibatalkan"
+        @selected(request('status') == 'Dibatalkan')
+    >
+        Dibatalkan
+    </option>
 
-                        <option
-                            value="Selesai"
-                            @selected(request('status')=='Selesai')
-                        >
-
-                            Selesai
-
-                        </option>
-
-                    </select>
+</select>
 
                 </div>
 
@@ -257,17 +272,33 @@
 
                     </div>
 
-                    <span
-                        class="rounded-full px-4 py-2 text-xs font-bold shadow
-                        {{ $schedule->status == 'Aktif'
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-slate-100 text-slate-700'
-                        }}"
-                    >
+@php
 
-                        {{ $schedule->status }}
+$badge = match($schedule->status){
 
-                    </span>
+    'Comming Soon' => 'bg-blue-100 text-blue-700',
+
+    'Aktif' => 'bg-green-100 text-green-700',
+
+    'Progress' => 'bg-yellow-100 text-yellow-700',
+
+    'Selesai' => 'bg-slate-100 text-slate-700',
+
+    'Dibatalkan' => 'bg-red-100 text-red-700',
+
+    default => 'bg-gray-100 text-gray-700',
+
+};
+
+@endphp
+
+<span
+    class="rounded-full px-4 py-2 text-xs font-bold shadow {{ $badge }}"
+>
+
+    {{ $schedule->status }}
+
+</span>
 
                 </div>
 
