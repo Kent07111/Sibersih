@@ -159,71 +159,117 @@
 @push('scripts')
 
 <script>
+const input = document.getElementById('images');
+const preview = document.getElementById('preview-images');
 
-// Preview Gambar
-document.getElementById('images').addEventListener('change', function(e){
-
-    const preview = document.getElementById('preview-images');
+input.addEventListener('change', async function (e) {
 
     preview.innerHTML = '';
 
-    [...e.target.files].forEach(file=>{
+    const dt = new DataTransfer();
 
-        const reader = new FileReader();
+    for (const originalFile of e.target.files) {
 
-        reader.onload = function(event){
+        let file = originalFile;
+
+        try {
+
+            // ===========================
+            // HEIC -> JPEG
+            // ===========================
+            if (
+                file.type === 'image/heic' ||
+                file.type === 'image/heif' ||
+                /\.(heic|heif)$/i.test(file.name)
+            ) {
+
+                const converted = await heic2any({
+                    blob: file,
+                    toType: "image/jpeg",
+                    quality: 0.95
+                });
+
+                file = new File(
+                    [converted],
+                    file.name.replace(/\.(heic|heif)$/i, ".jpg"),
+                    {
+                        type: "image/jpeg"
+                    }
+                );
+            }
+
+            // ===========================
+            // Semua gambar -> WEBP
+            // ===========================
+
+            const webp = await new Promise((resolve, reject) => {
+
+                new Compressor(file, {
+
+                    quality: 0.8,
+
+                    mimeType: 'image/webp',
+
+                    maxWidth: 1920,
+
+                    maxHeight: 1920,
+
+                    success(result) {
+
+                        resolve(
+                            new File(
+                                [result],
+                                file.name.replace(/\.[^.]+$/, '.webp'),
+                                {
+                                    type: 'image/webp'
+                                }
+                            )
+                        );
+
+                    },
+
+                    error(err) {
+
+                        reject(err);
+
+                    }
+
+                });
+
+            });
+
+            dt.items.add(webp);
+
+            // ===========================
+            // Preview
+            // ===========================
+
+            const url = URL.createObjectURL(webp);
 
             preview.innerHTML += `
                 <div class="overflow-hidden rounded-xl border bg-white shadow">
                     <img
-                        src="${event.target.result}"
+                        src="${url}"
                         class="h-40 w-full object-cover"
                     >
                     <div class="truncate p-2 text-xs">
-                        ${file.name}
+                        ${webp.name}
                     </div>
                 </div>
             `;
 
+        } catch (err) {
+
+            console.error(err);
+
+            alert(file.name + " gagal diproses.");
+
         }
 
-        reader.readAsDataURL(file);
+    }
 
-    });
-
-});
-
-
-// Preview Video
-document.getElementById('videos').addEventListener('change', function(e){
-
-    const preview = document.getElementById('preview-videos');
-
-    preview.innerHTML = '';
-
-    [...e.target.files].forEach(file=>{
-
-        const url = URL.createObjectURL(file);
-
-        preview.innerHTML += `
-            <div class="rounded-xl border bg-white p-3 shadow">
-                <video
-                    controls
-                    class="w-full rounded-lg"
-                >
-                    <source src="${url}">
-                </video>
-
-                <div class="mt-2 truncate text-xs">
-                    ${file.name}
-                </div>
-            </div>
-        `;
-
-    });
+    input.files = dt.files;
 
 });
-
 </script>
-
 @endpush

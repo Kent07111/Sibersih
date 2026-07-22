@@ -34,20 +34,22 @@ class ActivitygController extends Controller
         );
     }
 
-    public function show(Activity $activity)
-    {
-        $related = Activity::where('id', '!=', $activity->id)
-            ->where('status', 'Publish')
-            ->latest()
-            ->take(3)
-            ->get();
+public function show(Activity $activity)
+{
+    $activity->load('images');
 
-        return view(
-            'guest.activity.show',
-            compact(
-                'activity',
-                'related'
-            )
-        );
-    }
+    $related = Activity::whereKeyNot($activity->id)
+        ->where('status', 'Publish')
+        ->latest()
+        ->take(3)
+        ->get();
+
+    return view(
+        'guest.activity.show',
+        compact(
+            'activity',
+            'related'
+        )
+    );
+}
 }

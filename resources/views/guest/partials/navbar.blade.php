@@ -109,7 +109,7 @@
 
             <a class="mobile-menu" href="/kegiatan">Kegiatan</a>
 
-            <a class="mobile-menu" href="/gallery">Galeri</a>
+            <a class="mobile-menu" href="/galeri">Galeri</a>
 
             <a class="mobile-menu" href="/jadwal">Jadwal</a>
 

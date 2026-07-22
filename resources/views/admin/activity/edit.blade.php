@@ -373,15 +373,59 @@
 
 @push('scripts')
 
+<script src="https://cdn.tiny.cloud/1/4jrzzsgk6khdvn5i43u7wbrxotg20bhraoc2697y5s60qcr9/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 
 <script>
 
-ClassicEditor
-.create(document.querySelector('#editor'));
+tinymce.init({
+
+    selector:'#editor',
+
+    height:500,
+
+    menubar:false,
+
+    plugins:[
+        'advlist',
+        'autolink',
+        'lists',
+        'link',
+        'image',
+        'charmap',
+        'preview',
+        'anchor',
+        'searchreplace',
+        'visualblocks',
+        'code',
+        'fullscreen',
+        'insertdatetime',
+        'media',
+        'table',
+        'wordcount'
+    ],
+
+    toolbar:
+        'undo redo | blocks | ' +
+        'bold italic underline | forecolor backcolor | ' +
+        'alignleft aligncenter alignright alignjustify | ' +
+        'bullist numlist outdent indent | ' +
+        'link image media table | ' +
+        'preview code fullscreen',
+
+    branding:false,
+    promotion:false
+
+});
+
+document.querySelector("form").addEventListener("submit",function(){
+
+    tinymce.triggerSave();
+
+});
 
 
 // ===========================================
-// Thumbnail Preview
+// Preview Thumbnail
 // ===========================================
 
 document
@@ -417,13 +461,17 @@ const galleryInput=document.getElementById("gallery");
 
 const galleryPreview=document.getElementById("galleryPreview");
 
-galleryInput.addEventListener("change",function(){
+galleryInput.addEventListener("change",async function(){
 
-    galleryPreview.innerHTML='';
+    galleryPreview.innerHTML="";
 
-    Array.from(this.files).forEach(file=>{
+    const dt=new DataTransfer();
 
-        if(!file.type.startsWith("image/")) return;
+    for(const file of this.files){
+
+        const newFile=await ImageUploader.process(file);
+
+        dt.items.add(newFile);
 
         const reader=new FileReader();
 
@@ -431,32 +479,29 @@ galleryInput.addEventListener("change",function(){
 
             const card=document.createElement("div");
 
-            card.className="overflow-hidden rounded-xl border shadow";
+            card.className="relative overflow-hidden rounded-xl border bg-white shadow";
 
             card.innerHTML=`
-
                 <img
                     src="${e.target.result}"
                     class="h-40 w-full object-cover"
                 >
-
                 <div
-                    class="truncate border-t p-2 text-center text-xs"
+                    class="truncate border-t bg-white p-2 text-center text-xs"
                 >
-
-                    ${file.name}
-
+                    ${newFile.name}
                 </div>
-
             `;
 
             galleryPreview.appendChild(card);
 
-        }
+        };
 
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(newFile);
 
-    });
+    }
+
+    this.files=dt.files;
 
 });
 
@@ -471,8 +516,8 @@ document
 
     this.value=this.value
         .toLowerCase()
-        .replace(/[^a-z0-9-]/g,'')
         .replace(/\s+/g,'-')
+        .replace(/[^a-z0-9-]/g,'')
         .replace(/-+/g,'-');
 
 });

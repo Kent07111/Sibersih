@@ -79,92 +79,92 @@ class ActivityController extends Controller
         );
     }
 
-public function store(Request $request)
-{
-    $request->validate([
+    public function store(Request $request)
+    {
+        $request->validate([
 
-        'judul'      => 'required|max:255',
+            'judul'      => 'required|max:255',
 
-        'slug'       => 'required|unique:activities,slug',
+            'slug'       => 'required|unique:activities,slug',
 
-        'kategori'   => 'required|max:100',
+            'kategori'   => 'required|max:100',
 
-        'tanggal'    => 'required|date',
+            'tanggal'    => 'required|date',
 
-        'lokasi'     => 'required|max:255',
+            'lokasi'     => 'required|max:255',
 
-        'isi'        => 'required',
+            'isi'        => 'required',
 
-        'status'     => 'required',
+            'status'     => 'required',
 
-        'thumbnail' => 'nullable|file|max:15360',
-        'gallery.*' => 'nullable|file|max:15360',
+            'thumbnail' => 'nullable|file|max:15360',
+            'gallery.*' => 'nullable|file|max:15360',
 
-    ]);
+        ]);
 
-    $thumbnail = null;
+        $thumbnail = null;
 
-    if ($request->hasFile('thumbnail')) {
+        if ($request->hasFile('thumbnail')) {
 
-    $thumbnail = ImageService::upload(
-        $request->file('thumbnail'),
-        'activity/thumbnail'
-    );
-
-    }
-
-    $activity = Activity::create([
-
-        'judul'       => $request->judul,
-
-        'slug'        => Str::slug($request->slug),
-
-        'thumbnail'   => $thumbnail,
-
-        'kategori'    => $request->kategori,
-
-        'tanggal'     => $request->tanggal,
-
-        'lokasi'      => $request->lokasi,
-
-        'isi'         => $request->isi,
-
-        'status'      => $request->status,
-
-        'created_by'  => auth()->id(),
-
-    ]);
-
-    // ============================
-    // Upload Dokumentasi
-    // ============================
-
-    if ($request->hasFile('gallery')) {
-
-        foreach ($request->file('gallery') as $image) {
-
-            ActivityImage::create([
-
-                'activity_id' => $activity->id,
-
-                'gambar' => ImageService::upload(
-                    $image,
-                    'activity/gallery'
-                )
-
-            ]);
+        $thumbnail = ImageService::upload(
+            $request->file('thumbnail'),
+            'activity/thumbnail'
+        );
 
         }
 
-    }
+        $activity = Activity::create([
 
-    return redirect()
-        ->route('activity.index')
-        ->with(
-            'success',
-            'Kegiatan berhasil ditambahkan.'
-        );
-}
+            'judul'       => $request->judul,
+
+            'slug'        => Str::slug($request->slug),
+
+            'thumbnail'   => $thumbnail,
+
+            'kategori'    => $request->kategori,
+
+            'tanggal'     => $request->tanggal,
+
+            'lokasi'      => $request->lokasi,
+
+            'isi'         => $request->isi,
+
+            'status'      => $request->status,
+
+            'created_by'  => auth()->id(),
+
+        ]);
+
+        // ============================
+        // Upload Dokumentasi
+        // ============================
+
+        if ($request->hasFile('gallery')) {
+
+            foreach ($request->file('gallery') as $image) {
+
+                ActivityImage::create([
+
+                    'activity_id' => $activity->id,
+
+                    'gambar' => ImageService::upload(
+                        $image,
+                        'activity/gallery'
+                    )
+
+                ]);
+
+            }
+
+        }
+
+        return redirect()
+            ->route('activity.index')
+            ->with(
+                'success',
+                'Kegiatan berhasil ditambahkan.'
+            );
+    }
 
     public function edit(Activity $activity)
     {

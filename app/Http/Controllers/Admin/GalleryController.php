@@ -94,30 +94,25 @@ public function index(Request $request)
 
         DB::transaction(function () use ($request) {
 
-            $manager = new ImageManager(new Driver());
 
             // Upload Gambar
             if ($request->hasFile('images')) {
 
                 foreach ($request->file('images') as $image) {
 
-                    $img = $manager->read($image);
+                    $filename = Str::uuid().'.webp';
 
-                    if ($img->width() > 1920) {
-                        $img->scaleDown(width: 1920);
-                    }
-
-                    $filename = Str::uuid() . '.webp';
-
-                    Storage::disk('public')->put(
-                        'gallery/images/' . $filename,
-                        $img->toWebp(80)->toString()
+                    $path = $image->storeAs(
+                        'gallery/images',
+                        $filename,
+                        'public'
                     );
 
                     ActivityImage::create([
-                        'activity_id' => $request->activity_id,
-                        'gambar'      => 'gallery/images/' . $filename,
+                        'activity_id'=>$request->activity_id,
+                        'gambar'=>$path,
                     ]);
+
                 }
             }
 
