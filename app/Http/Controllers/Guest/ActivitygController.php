@@ -8,31 +8,33 @@ use Illuminate\Http\Request;
 
 class ActivitygController extends Controller
 {
-    public function index(Request $request)
-    {
-        $query = Activity::where('status', 'Publish');
+public function index(Request $request)
+{
+    $query = Activity::query()
+        ->where('status', 'Publish')
+        ->withCount('images');
 
-        if ($request->filled('search')) {
+    if ($request->filled('search')) {
 
-            $query->where(function ($q) use ($request) {
+        $query->where(function ($q) use ($request) {
 
-                $q->where('judul', 'like', '%' . $request->search . '%')
-                  ->orWhere('deskripsi', 'like', '%' . $request->search . '%');
+            $q->where('judul', 'like', '%' . $request->search . '%')
+              ->orWhere('isi', 'like', '%' . $request->search . '%');
 
-            });
+        });
 
-        }
-
-        $activities = $query
-            ->latest()
-            ->paginate(9)
-            ->withQueryString();
-
-        return view(
-            'guest.activity.index',
-            compact('activities')
-        );
     }
+
+    $activities = $query
+        ->latest()
+        ->paginate(9)
+        ->withQueryString();
+
+    return view(
+        'guest.activity.index',
+        compact('activities')
+    );
+}
 
 public function show(Activity $activity)
 {

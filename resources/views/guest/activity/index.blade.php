@@ -266,17 +266,15 @@
                 class="mt-8 flex items-center justify-between border-t pt-5"
             >
 
-                <div
-                    class="flex items-center gap-2 text-sm text-slate-500"
-                >
+<div class="flex items-center gap-2 text-sm text-slate-500">
 
-                    📷
+    📷
 
-                    {{ count(json_decode($activity->dokumentasi ?? '[]')) }}
+    {{ $activity->images_count }}
 
-                    Dokumentasi
+    Dokumentasi
 
-                </div>
+</div>
 
                 <a
                     href="{{ route('guest.activity.show',$activity) }}"
