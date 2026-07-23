@@ -162,7 +162,7 @@
 
                                 </option>
                                 <option
-                                    value="Selesai"
+                                    value="Comming Soon"
                                     @selected($schedule->status=="Comming Soon")
                                 >
 
@@ -170,7 +170,7 @@
 
                                 </option>
                                 <option
-                                    value="Selesai"
+                                    value="Progress"
                                     @selected($schedule->status=="Progress")
                                 >
 
@@ -178,7 +178,7 @@
 
                                 </option>
                                 <option
-                                    value="Selesai"
+                                    value="Dibatalkan"
                                     @selected($schedule->status=="Dibatalkan")
                                 >
 
@@ -271,19 +271,113 @@
 
 @push('scripts')
 
+<script src="https://cdn.tiny.cloud/1/4jrzzsgk6khdvn5i43u7wbrxotg20bhraoc2697y5s60qcr9/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 
 <script>
 
-ClassicEditor
-.create(
-    document.querySelector('#editor')
-)
-.catch(error => {
+tinymce.init({
 
-    console.error(error);
+    selector:'#editor',
+
+    height:600,
+
+    menubar:true,
+
+    plugins:'image link table lists media code fullscreen preview wordcount',
+
+    toolbar:'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | image media link table | code fullscreen preview',
+
+    automatic_uploads:true,
+
+    file_picker_types:'image',
+
+    file_picker_callback:function(callback){
+
+        const input=document.createElement('input');
+
+        input.type='file';
+
+        input.accept='image/*';
+
+        input.onchange=function(){
+
+            let file=this.files[0];
+
+            let formData=new FormData();
+
+            formData.append('file',file);
+
+            fetch("{{ route('education.upload-image') }}",{
+
+                method:'POST',
+
+                headers:{
+                    'X-CSRF-TOKEN':'{{ csrf_token() }}'
+                },
+
+                body:formData
+
+            })
+
+            .then(res=>res.json())
+
+            .then(data=>{
+
+                callback(data.location);
+
+            })
+
+            .catch(err=>{
+
+                console.error(err);
+
+                alert('Upload gagal');
+
+            });
+
+        };
+
+        input.click();
+
+    }
 
 });
 
+// Auto Slug
+// Preview Thumbnail
+document.getElementById("thumbnail").addEventListener("change", function (e) {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (ev) {
+
+        const img = document.getElementById("preview");
+
+        img.src = ev.target.result;
+
+        img.classList.remove("hidden");
+
+    }
+
+    reader.readAsDataURL(file);
+
+});
+document.getElementById("judul").addEventListener("input", function () {
+
+    let slug = this.value
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+
+    document.getElementById("slug").value = slug;
+
+});
 </script>
 
 @endpush

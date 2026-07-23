@@ -261,8 +261,7 @@ input.addEventListener('change', async function (e) {
         } catch (err) {
 
             console.error(err);
-
-            alert(file.name + " gagal diproses.");
+            alert(err.message);
 
         }
 
