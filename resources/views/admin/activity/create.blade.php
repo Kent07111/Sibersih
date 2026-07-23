@@ -68,6 +68,7 @@
                             </label>
 
                             <input
+                                id="judul"
                                 type="text"
                                 name="judul"
                                 class="w-full rounded-xl border p-3"
@@ -436,20 +437,25 @@ galleryInput.addEventListener("change", async function(){
     this.files=dt.files;
 
 });
-// Slug
+// =======================================
+// Auto Generate Slug
+// =======================================
 
-document
-.getElementById("slug")
-.addEventListener("input",function(){
+const judulInput = document.getElementById("judul");
+const slugInput = document.getElementById("slug");
 
-    this.value=this.value
+judulInput.addEventListener("input", function () {
+
+    slugInput.value = this.value
         .toLowerCase()
-        .replace(/[^a-z0-9-]/g,'')
-        .replace(/\s+/g,'-')
-        .replace(/-+/g,'-');
+        .trim()
+        .replace(/\s+/g, "-")          // spasi -> -
+        .replace(/[^\w\-]+/g, "")      // hapus karakter selain huruf, angka, -
+        .replace(/\-\-+/g, "-")        // -- menjadi -
+        .replace(/^-+/, "")            // hapus - di awal
+        .replace(/-+$/, "");           // hapus - di akhir
 
 });
-
 </script>
 
 @endpush

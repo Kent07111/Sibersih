@@ -73,61 +73,84 @@
     <div
         class="mx-auto max-w-7xl px-6"
     >
+<form
+    method="GET"
+    class="rounded-[30px] border border-slate-100 bg-white p-7 shadow-2xl"
+>
 
-        <form
-            method="GET"
-            class="rounded-[30px] border border-slate-100 bg-white p-7 shadow-2xl"
-        >
+    <div class="grid grid-cols-1 gap-5 lg:grid-cols-5">
 
-            <div
-                class="grid grid-cols-1 gap-5 lg:grid-cols-4"
-            >
+        {{-- Search --}}
+        <div class="lg:col-span-3">
 
-                <div class="lg:col-span-3">
+            <div class="relative">
 
-                    <div class="relative">
+                <svg
+                    class="absolute left-5 top-1/2 h-6 w-6 -translate-y-1/2 text-slate-400"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                >
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="m21 21-4.3-4.3"/>
+                </svg>
 
-                        <svg
-                            class="absolute left-5 top-1/2 h-6 w-6 -translate-y-1/2 text-slate-400"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            viewBox="0 0 24 24"
-                        >
-
-                            <circle cx="11" cy="11" r="8"/>
-
-                            <path d="m21 21-4.3-4.3"/>
-
-                        </svg>
-
-                        <input
-                            type="text"
-                            name="search"
-                            value="{{ request('search') }}"
-                            placeholder="Cari kegiatan..."
-                            class="w-full rounded-2xl border p-5 pl-14"
-                        >
-
-                    </div>
-
-                </div>
-
-                <div>
-
-                    <button
-                        class="w-full rounded-2xl bg-blue-600 p-5 font-bold text-white transition hover:bg-blue-700"
-                    >
-
-                        Cari
-
-                    </button>
-
-                </div>
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Cari kegiatan..."
+                    class="w-full rounded-2xl border p-5 pl-14"
+                >
 
             </div>
 
-        </form>
+        </div>
+
+        {{-- Filter --}}
+        <div class="flex items-center justify-center">
+
+            <div class="flex w-full rounded-2xl border bg-slate-100 p-1">
+
+                <a
+                    href="{{ request()->fullUrlWithQuery(['sort'=>'latest','page'=>1]) }}"
+                    class="flex-1 rounded-xl px-4 py-3 text-center text-sm font-semibold transition
+                    {{ request('sort','latest')=='latest'
+                        ? 'bg-blue-600 text-white shadow'
+                        : 'text-slate-600 hover:bg-white' }}"
+                >
+                    🆕 Terbaru
+                </a>
+
+                <a
+                    href="{{ request()->fullUrlWithQuery(['sort'=>'oldest','page'=>1]) }}"
+                    class="flex-1 rounded-xl px-4 py-3 text-center text-sm font-semibold transition
+                    {{ request('sort')=='oldest'
+                        ? 'bg-blue-600 text-white shadow'
+                        : 'text-slate-600 hover:bg-white' }}"
+                >
+                    📅 Terlama
+                </a>
+
+            </div>
+
+        </div>
+
+        {{-- Tombol --}}
+        <div>
+
+            <button
+                class="w-full rounded-2xl bg-blue-600 p-5 font-bold text-white transition hover:bg-blue-700"
+            >
+                Cari
+            </button>
+
+        </div>
+
+    </div>
+
+</form>
 
     </div>
 
@@ -266,15 +289,15 @@
                 class="mt-8 flex items-center justify-between border-t pt-5"
             >
 
-<div class="flex items-center gap-2 text-sm text-slate-500">
+                <div class="flex items-center gap-2 text-sm text-slate-500">
 
-    📷
+                    📷
 
-    {{ $activity->images_count }}
+                    {{ $activity->images_count }}
 
-    Dokumentasi
+                    Dokumentasi
 
-</div>
+                </div>
 
                 <a
                     href="{{ route('guest.activity.show',$activity) }}"

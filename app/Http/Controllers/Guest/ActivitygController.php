@@ -15,25 +15,25 @@ public function index(Request $request)
         ->withCount('images');
 
     if ($request->filled('search')) {
-
         $query->where(function ($q) use ($request) {
-
             $q->where('judul', 'like', '%' . $request->search . '%')
               ->orWhere('isi', 'like', '%' . $request->search . '%');
-
         });
+    }
 
+    // Filter Urutan
+    if ($request->sort == 'oldest') {
+        $query->orderBy('tanggal', 'asc');
+    } else {
+        // Default terbaru
+        $query->orderBy('tanggal', 'desc');
     }
 
     $activities = $query
-        ->latest()
         ->paginate(9)
         ->withQueryString();
 
-    return view(
-        'guest.activity.index',
-        compact('activities')
-    );
+    return view('guest.activity.index', compact('activities'));
 }
 
 public function show(Activity $activity)
