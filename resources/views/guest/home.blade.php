@@ -776,7 +776,7 @@
         >
 
             <a
-                href="#"
+                href="/edukasi"
                 class="inline-flex items-center rounded-xl bg-green-600 px-8 py-4 font-semibold text-white transition hover:bg-green-700"
             >
 
