@@ -317,7 +317,59 @@
 @push('scripts')
 <script src="https://cdn.tiny.cloud/1/4jrzzsgk6khdvn5i43u7wbrxotg20bhraoc2697y5s60qcr9/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 
+<script>
+const thumbnailInput = document.getElementById("thumbnail");
+const thumbnailPreview = document.getElementById("previewThumbnail");
 
+thumbnailInput.addEventListener("change", async function () {
+
+    const originalFile = this.files[0];
+
+    if (!originalFile) {
+        return;
+    }
+
+    try {
+
+        const newFile = await ImageUploader.process(originalFile);
+
+        const dataTransfer = new DataTransfer();
+
+        dataTransfer.items.add(newFile);
+
+        // File asli diganti dengan hasil WebP
+        this.files = dataTransfer.files;
+
+        const imageUrl = URL.createObjectURL(newFile);
+
+        thumbnailPreview.src = imageUrl;
+        thumbnailPreview.classList.remove("hidden");
+
+        thumbnailPreview.onload = function () {
+            URL.revokeObjectURL(imageUrl);
+        };
+
+        console.log("Thumbnail berhasil diproses:", {
+            nama: newFile.name,
+            tipe: newFile.type,
+            ukuran: newFile.size
+        });
+
+    } catch (error) {
+
+        console.error("Thumbnail gagal diproses:", error);
+
+        alert(
+            "Thumbnail gagal diproses: " + error.message
+        );
+
+        this.value = "";
+        thumbnailPreview.src = "";
+        thumbnailPreview.classList.add("hidden");
+    }
+
+});
+</script>
 <script>
 
 tinymce.init({
@@ -359,33 +411,6 @@ tinymce.init({
 document.querySelector("form").addEventListener("submit", function () {
     tinymce.triggerSave();
 });
-
-// Preview Thumbnail
-
-document
-.getElementById("thumbnail")
-.addEventListener("change",function(e){
-
-    const file=e.target.files[0];
-
-    if(!file) return;
-
-    const reader=new FileReader();
-
-    reader.onload=function(ev){
-
-        const img=document.getElementById("previewThumbnail");
-
-        img.src=ev.target.result;
-
-        img.classList.remove("hidden");
-
-    }
-
-    reader.readAsDataURL(file);
-
-});
-
 // =======================================
 // Preview Multiple Gallery
 // =======================================

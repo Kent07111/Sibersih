@@ -7,7 +7,7 @@ use App\Models\Activity;
 use Illuminate\Http\Request;
 use App\Services\ImageService;
 use App\Models\ActivityImage;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 class ActivityController extends Controller
@@ -166,152 +166,311 @@ class ActivityController extends Controller
             );
     }
 
-    public function edit(Activity $activity)
-    {
-        return view(
-            'admin.activity.edit',
-            compact('activity')
-        );
-    }
-public function destroyImage(ActivityImage $image)
+public function edit(Activity $activity)
 {
-    if (
-        $image->gambar &&
-        Storage::disk('public')->exists($image->gambar)
-    ) {
+    $activity->load('images');
 
-        Storage::disk('public')->delete($image->gambar);
-
-    }
-
-    $image->delete();
-
-    return back()->with(
-        'success',
-        'Dokumentasi berhasil dihapus.'
+    return view(
+        'admin.activity.edit',
+        compact('activity')
     );
 }
+
 public function update(Request $request, Activity $activity)
 {
-    $request->validate([
+    $validated = $request->validate([
 
-        'judul'      => 'required|max:255',
+        'judul' => [
+            'required',
+            'string',
+            'max:255',
+        ],
 
-        'slug'       => 'required|unique:activities,slug,' . $activity->id,
+        'slug' => [
+            'required',
+            'string',
+            'max:255',
+            'unique:activities,slug,' . $activity->id,
+        ],
 
-        'kategori'   => 'required|max:100',
+        'kategori' => [
+            'required',
+            'string',
+            'max:100',
+        ],
 
-        'tanggal'    => 'required|date',
+        'tanggal' => [
+            'required',
+            'date',
+        ],
 
-        'lokasi'     => 'required|max:255',
+        'lokasi' => [
+            'required',
+            'string',
+            'max:255',
+        ],
 
-        'isi'        => 'required',
+        'isi' => [
+            'required',
+            'string',
+        ],
 
-        'status'     => 'required',
+        'status' => [
+            'required',
+            'in:Draft,Publish',
+        ],
 
-        'thumbnail'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'thumbnail' => [
+            'nullable',
+            'file',
+            'mimes:jpg,jpeg,png,webp',
+            'max:15360',
+        ],
 
-        'gallery.*'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'gallery' => [
+            'nullable',
+            'array',
+            'max:20',
+        ],
+
+        'gallery.*' => [
+            'file',
+            'mimes:jpg,jpeg,png,webp',
+            'max:15360',
+        ],
 
     ]);
 
-    $data = [
+    $oldThumbnail = $activity->thumbnail;
 
-        'judul'      => $request->judul,
+    $newThumbnail = null;
 
-        'slug'       => Str::slug($request->slug),
+    $newGalleryPaths = [];
 
-        'kategori'   => $request->kategori,
+    try {
 
-        'tanggal'    => $request->tanggal,
+        DB::beginTransaction();
 
-        'lokasi'     => $request->lokasi,
+        $data = [
 
-        'isi'        => $request->isi,
+            'judul' => $validated['judul'],
 
-        'status'     => $request->status,
+            'slug' => Str::slug($validated['slug']),
 
-    ];
+            'kategori' => $validated['kategori'],
 
-    if ($request->hasFile('thumbnail')) {
+            'tanggal' => $validated['tanggal'],
 
+            'lokasi' => $validated['lokasi'],
+
+            'isi' => $validated['isi'],
+
+            'status' => $validated['status'],
+
+        ];
+
+        // ==========================================
+        // Upload thumbnail baru
+        // ==========================================
+
+        if ($request->hasFile('thumbnail')) {
+
+            $newThumbnail = ImageService::upload(
+                $request->file('thumbnail'),
+                'activity/thumbnail'
+            );
+
+            $data['thumbnail'] = $newThumbnail;
+
+        }
+
+        // ==========================================
+        // Update data kegiatan
+        // ==========================================
+
+        $activity->update($data);
+
+        // ==========================================
+        // Upload gallery baru
+        // ==========================================
+
+        if ($request->hasFile('gallery')) {
+
+            foreach ($request->file('gallery') as $image) {
+
+                $path = ImageService::upload(
+                    $image,
+                    'activity/gallery'
+                );
+
+                $newGalleryPaths[] = $path;
+
+                ActivityImage::create([
+
+                    'activity_id' => $activity->id,
+
+                    'gambar' => $path,
+
+                ]);
+
+            }
+
+        }
+
+        DB::commit();
+
+        // Hapus thumbnail lama setelah update berhasil
         if (
-            $activity->thumbnail &&
-            Storage::disk('public')->exists($activity->thumbnail)
+            $newThumbnail &&
+            $oldThumbnail &&
+            Storage::disk('public')->exists($oldThumbnail)
         ) {
 
-            Storage::disk('public')->delete($activity->thumbnail);
+            Storage::disk('public')->delete($oldThumbnail);
 
         }
 
-        $data['thumbnail'] = $request
-            ->file('thumbnail')
-            ->store('activity/thumbnail', 'public');
+        return redirect()
+            ->route('activity.index')
+            ->with(
+                'success',
+                'Kegiatan berhasil diperbarui.'
+            );
 
-    }
+    } catch (\Throwable $error) {
 
-    $activity->update($data);
+        DB::rollBack();
 
-    if ($request->hasFile('gallery')) {
+        // Hapus thumbnail baru jika database gagal
+        if (
+            $newThumbnail &&
+            Storage::disk('public')->exists($newThumbnail)
+        ) {
 
-        foreach ($request->file('gallery') as $image) {
-
-            $path = $image
-                ->store('activity/gallery', 'public');
-
-            ActivityImage::create([
-
-                'activity_id' => $activity->id,
-
-                'gambar'      => $path
-
-            ]);
+            Storage::disk('public')->delete($newThumbnail);
 
         }
 
-    }
+        // Hapus gallery baru jika database gagal
+        foreach ($newGalleryPaths as $path) {
 
-    return redirect()
-        ->route('activity.index')
-        ->with(
+            if (Storage::disk('public')->exists($path)) {
+
+                Storage::disk('public')->delete($path);
+
+            }
+
+        }
+
+        report($error);
+
+        return back()
+            ->withInput()
+            ->with(
+                'error',
+                'Kegiatan gagal diperbarui. Silakan coba kembali.'
+            );
+
+    }
+}
+
+public function destroyImage(ActivityImage $image)
+{
+    try {
+
+        DB::beginTransaction();
+
+        $imagePath = $image->gambar;
+
+        $image->delete();
+
+        DB::commit();
+
+        if (
+            $imagePath &&
+            Storage::disk('public')->exists($imagePath)
+        ) {
+
+            Storage::disk('public')->delete($imagePath);
+
+        }
+
+        return back()->with(
             'success',
-            'Kegiatan berhasil diperbarui.'
+            'Dokumentasi berhasil dihapus.'
         );
+
+    } catch (\Throwable $error) {
+
+        DB::rollBack();
+
+        report($error);
+
+        return back()->with(
+            'error',
+            'Dokumentasi gagal dihapus.'
+        );
+
+    }
 }
 
 public function destroy(Activity $activity)
 {
-    if (
-        $activity->thumbnail &&
-        Storage::disk('public')->exists($activity->thumbnail)
-    ) {
+    try {
 
-        Storage::disk('public')->delete($activity->thumbnail);
+        DB::beginTransaction();
 
-    }
+        $thumbnailPath = $activity->thumbnail;
 
-    foreach ($activity->images as $image) {
+        $galleryPaths = $activity
+            ->images()
+            ->pluck('gambar')
+            ->toArray();
+
+        $activity->delete();
+
+        DB::commit();
 
         if (
-            $image->gambar &&
-            Storage::disk('public')->exists($image->gambar)
+            $thumbnailPath &&
+            Storage::disk('public')->exists($thumbnailPath)
         ) {
 
-            Storage::disk('public')->delete($image->gambar);
+            Storage::disk('public')->delete($thumbnailPath);
 
         }
 
-        $image->delete();
+        foreach ($galleryPaths as $path) {
+
+            if (
+                $path &&
+                Storage::disk('public')->exists($path)
+            ) {
+
+                Storage::disk('public')->delete($path);
+
+            }
+
+        }
+
+        return redirect()
+            ->route('activity.index')
+            ->with(
+                'success',
+                'Kegiatan berhasil dihapus.'
+            );
+
+    } catch (\Throwable $error) {
+
+        DB::rollBack();
+
+        report($error);
+
+        return back()->with(
+            'error',
+            'Kegiatan gagal dihapus.'
+        );
 
     }
-
-    $activity->delete();
-
-    return redirect()
-        ->route('activity.index')
-        ->with(
-            'success',
-            'Kegiatan berhasil dihapus.'
-        );
 }
 }
