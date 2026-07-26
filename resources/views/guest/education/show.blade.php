@@ -326,143 +326,49 @@
     </div>
 
 @endif
-
-
 {{-- ================= PDF ================= --}}
 
 @if($education->pdf)
 
-    @php
-        $pdfUrl = asset('storage/'.$education->pdf);
+<div class="rounded-3xl border border-red-200 bg-white shadow-xl">
 
-    @endphp
+    <div class="flex flex-col items-center gap-5 p-10 text-center md:flex-row md:text-left">
 
-    <div
-        class="overflow-hidden rounded-3xl border border-red-200 bg-white shadow-xl"
-    >
+        <div class="flex h-20 w-20 items-center justify-center rounded-3xl bg-red-100 text-5xl">
+            📄
+        </div>
 
-        {{-- Header --}}
-        <div
-            class="flex flex-col items-center gap-5 p-6 text-center md:flex-row md:p-10 md:text-left"
-        >
+        <div class="flex-1">
 
-            <div
-                class="flex h-20 w-20 shrink-0 items-center justify-center rounded-3xl bg-red-100 text-5xl"
-            >
-                📄
-            </div>
+            <h2 class="text-2xl font-bold text-slate-800">
+                Materi PDF
+            </h2>
 
-            <div class="flex-1">
-
-                <h2 class="text-2xl font-bold text-slate-800">
-                    Materi PDF
-                </h2>
-
-                <p class="mt-2 text-slate-500">
-                    Baca materi edukasi langsung melalui halaman ini.
-                </p>
-
-            </div>
-
-            <a
-                href="{{ $pdfUrl }}"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="rounded-2xl bg-red-600 px-7 py-3 font-semibold text-white transition hover:bg-red-700"
-            >
-                Buka PDF
-            </a>
+            <p class="mt-2 text-slate-500">
+                Anda dapat membaca materi langsung di halaman ini atau mengunduhnya.
+            </p>
 
         </div>
 
-        {{-- PDF Viewer --}}
-        <div
-            id="pdf-viewer"
-            data-pdf-url="{{ $pdfUrl }}"
-            class="border-t border-slate-200 bg-slate-100"
+        <a
+            href="{{ asset('storage/'.$education->pdf) }}"
+            target="_blank"
+            class="rounded-2xl bg-red-600 px-8 py-4 font-semibold text-white transition hover:scale-105 hover:bg-red-700"
         >
-
-            {{-- Toolbar --}}
-            <div
-                class="flex flex-wrap items-center justify-center gap-3 border-b border-slate-200 bg-white p-4"
-            >
-
-                <button
-                    type="button"
-                    id="pdf-prev"
-                    class="rounded-xl bg-slate-800 px-4 py-2 font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                    ← Sebelumnya
-                </button>
-
-                <div
-                    class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 font-semibold text-slate-700"
-                >
-                    Halaman
-                    <span id="pdf-current-page">1</span>
-                    dari
-                    <span id="pdf-total-page">0</span>
-                </div>
-
-                <button
-                    type="button"
-                    id="pdf-next"
-                    class="rounded-xl bg-slate-800 px-4 py-2 font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                    Berikutnya →
-                </button>
-
-                <div class="flex items-center gap-2">
-
-                    <button
-                        type="button"
-                        id="pdf-zoom-out"
-                        class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-300 bg-white text-xl font-bold text-slate-700 transition hover:bg-slate-100"
-                        title="Perkecil"
-                    >
-                        −
-                    </button>
-
-                    <button
-                        type="button"
-                        id="pdf-zoom-in"
-                        class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-300 bg-white text-xl font-bold text-slate-700 transition hover:bg-slate-100"
-                        title="Perbesar"
-                    >
-                        +
-                    </button>
-
-                </div>
-
-            </div>
-
-            {{-- Loading --}}
-            <div
-                id="pdf-loading"
-                class="p-6 text-center font-semibold text-slate-500"
-            >
-                Memuat materi PDF...
-            </div>
-
-            {{-- Error --}}
-            <div
-                id="pdf-error"
-                class="hidden p-6 text-center font-semibold text-red-600"
-            ></div>
-
-            {{-- Canvas --}}
-            <div
-                class="flex min-h-[500px] justify-center overflow-auto p-4 md:p-8"
-            >
-                <canvas
-                    id="pdf-canvas"
-                    class="max-w-full bg-white shadow-xl"
-                ></canvas>
-            </div>
-
-        </div>
+            Download PDF
+        </a>
 
     </div>
+
+    {{-- PDF Viewer --}}
+    <div class="border-t">
+<iframe
+    src="{{ asset('storage/'.$education->pdf) }}"
+    class="h-[850px] w-full border-0"
+></iframe>
+    </div>
+
+</div>
 
 @endif
 {{-- ================= SIDEBAR ================= --}}
