@@ -3,8 +3,6 @@ import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
-console.log("PDF.js API:", pdfjsLib.version);
-console.log("PDF.js Worker:", pdfWorkerUrl);
 document.addEventListener("DOMContentLoaded", () => {
     const viewer = document.getElementById("pdf-viewer");
 
