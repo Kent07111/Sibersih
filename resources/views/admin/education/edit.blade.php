@@ -227,7 +227,51 @@
                     >
 
                 </div>
+{{-- PowerPoint --}}
+<div class="rounded-2xl bg-white p-6 shadow">
 
+    <h2 class="mb-5 font-bold">
+        PowerPoint Edukasi
+    </h2>
+
+    @if($education->ppt)
+
+        <div class="mb-4 rounded-xl border border-orange-200 bg-orange-50 p-4">
+
+            <p class="mb-3 text-sm font-medium text-orange-800">
+                File PowerPoint saat ini tersedia.
+            </p>
+
+            <a
+                href="{{ asset('storage/' . $education->ppt) }}"
+                target="_blank"
+                class="inline-flex items-center rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700"
+            >
+                📊 Lihat / Download PPT Saat Ini
+            </a>
+
+        </div>
+
+    @endif
+
+    <input
+        type="file"
+        name="ppt"
+        accept=".ppt,.pptx"
+        class="w-full rounded-xl border p-3"
+    >
+
+    <p class="mt-2 text-xs text-slate-500">
+        Kosongkan jika tidak ingin mengganti file. Format PPT atau PPTX, maksimal 20 MB.
+    </p>
+
+    @error('ppt')
+        <p class="mt-2 text-sm text-red-600">
+            {{ $message }}
+        </p>
+    @enderror
+
+</div>
             </div>
 
             {{-- RIGHT --}}
@@ -246,20 +290,30 @@
 
                 </div>
 
-                <div class="rounded-2xl bg-white p-6 shadow">
+<div class="rounded-2xl bg-white p-6 shadow">
 
-                    <h2 class="mb-5 font-bold">
-                        Video Youtube
-                    </h2>
+    <h2 class="mb-5 font-bold">
+        Video YouTube
+    </h2>
 
-                    <input
-                        type="url"
-                        name="video_url"
-                        value="{{ old('video_url',$education->video_url) }}"
-                        class="w-full rounded-xl border p-3"
-                    >
+    <textarea
+        name="video_url"
+        rows="7"
+        class="w-full rounded-xl border p-3 font-mono text-sm"
+        placeholder='<iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID" title="YouTube video player" frameborder="0" allowfullscreen></iframe>'
+    >{{ old('video_url', $education->video_url) }}</textarea>
 
-                </div>
+    <p class="mt-2 text-xs text-slate-500">
+        Tempel kode iframe dari menu Bagikan → Sematkan di YouTube.
+    </p>
+
+    @error('video_url')
+        <p class="mt-2 text-sm text-red-600">
+            {{ $message }}
+        </p>
+    @enderror
+
+</div>
 
                 <div class="flex justify-end gap-3">
 

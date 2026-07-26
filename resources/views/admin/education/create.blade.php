@@ -210,6 +210,32 @@
                     >
 
                 </div>
+                    {{-- PowerPoint --}}
+
+                    <div class="rounded-2xl bg-white p-6 shadow">
+
+                        <h2 class="mb-5 font-bold">
+                            PowerPoint Edukasi
+                        </h2>
+
+                        <input
+                            type="file"
+                            name="ppt"
+                            accept=".ppt,.pptx"
+                            class="w-full rounded-xl border p-3"
+                        >
+
+                        <p class="mt-2 text-xs text-slate-500">
+                            Format PPT atau PPTX, maksimal 20 MB.
+                        </p>
+
+                        @error('ppt')
+                            <p class="mt-2 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
 
             </div>
 
@@ -237,17 +263,19 @@
                 <div class="rounded-2xl bg-white p-6 shadow">
 
                     <h2 class="mb-5 font-bold">
-
-                        Video Youtube
-
+                        Video YouTube
                     </h2>
 
-                    <input
-                        type="url"
+                    <textarea
                         name="video_url"
-                        class="w-full rounded-xl border p-3"
-                        placeholder="https://youtube.com/..."
-                    >
+                        rows="6"
+                        class="w-full rounded-xl border p-3 font-mono text-sm"
+                        placeholder='<iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID" title="YouTube video player" frameborder="0" allowfullscreen></iframe>'
+                    >{{ old('video_url') }}</textarea>
+
+                    <p class="mt-2 text-xs text-slate-500">
+                        Tempel langsung kode Embed (iframe) dari YouTube.
+                    </p>
 
                 </div>
 

@@ -218,49 +218,32 @@
 
     </article>
 
+
     {{-- ================= VIDEO ================= --}}
 
     @if($education->video_url)
 
-        <div
-            class="overflow-hidden rounded-3xl bg-white shadow-xl"
-        >
+        <div class="overflow-hidden rounded-3xl bg-white shadow-xl">
 
-            <div
-                class="border-b bg-green-600 px-8 py-5 text-white"
-            >
+            <div class="border-b bg-green-600 px-8 py-5 text-white">
 
-                <h2
-                    class="text-2xl font-bold"
-                >
-
+                <h2 class="text-2xl font-bold">
                     🎥 Video Edukasi
-
                 </h2>
 
-                <p
-                    class="mt-2 text-green-100"
-                >
-
+                <p class="mt-2 text-green-100">
                     Tonton video untuk memahami materi dengan lebih mudah.
-
                 </p>
 
             </div>
 
-            <div
-                class="p-8"
-            >
+            <div class="p-8">
 
                 <div
-                    class="aspect-video overflow-hidden rounded-2xl shadow-lg"
+                    class="video-embed aspect-video overflow-hidden rounded-2xl bg-black shadow-lg"
                 >
 
-                    <iframe
-                        src="{{ $education->video_url }}"
-                        class="h-full w-full"
-                        allowfullscreen
-                    ></iframe>
+                    {!! $education->video_url !!}
 
                 </div>
 
@@ -270,6 +253,68 @@
 
     @endif
 
+
+{{-- ================= POWERPOINT ================= --}}
+
+@if($education->ppt)
+
+    @php
+        $pptUrl = asset('storage/' . $education->ppt);
+
+        $pptViewerUrl =
+            'https://view.officeapps.live.com/op/embed.aspx?src=' .
+            urlencode($pptUrl);
+    @endphp
+
+    <div class="overflow-hidden rounded-3xl bg-white shadow-xl">
+
+        <div
+            class="flex flex-col gap-4 border-b bg-gradient-to-r from-orange-600 to-amber-500 px-8 py-5 text-white sm:flex-row sm:items-center sm:justify-between"
+        >
+
+            <div>
+
+                <h2 class="text-2xl font-bold">
+                    📊 Materi PowerPoint
+                </h2>
+
+                <p class="mt-2 text-orange-100">
+                    Pelajari materi presentasi langsung melalui halaman ini.
+                </p>
+
+            </div>
+
+            <a
+                href="{{ $pptUrl }}"
+                download
+                class="inline-flex items-center justify-center rounded-xl bg-white px-5 py-3 font-semibold text-orange-700 transition hover:scale-105 hover:bg-orange-50"
+            >
+                Download PPT
+            </a>
+
+        </div>
+
+        <div class="p-4 md:p-8">
+
+            <div
+                class="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-inner"
+            >
+
+                <iframe
+                    src="{{ $pptViewerUrl }}"
+                    title="PowerPoint {{ $education->judul }}"
+                    class="h-[450px] w-full md:h-[650px] lg:h-[720px]"
+                    frameborder="0"
+                    allowfullscreen
+                ></iframe>
+
+            </div>
+
+        </div>
+
+    </div>
+
+@endif
     {{-- ================= PDF ================= --}}
 
     @if($education->pdf)

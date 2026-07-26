@@ -9,27 +9,7 @@ class Education extends Model
 {
     use HasFactory;
     protected $table = 'educations';
-    protected $fillable = [
-
-        'judul',
-
-        'slug',
-        'excerpt',
-        'kategori',
-
-        'thumbnail',
-
-        'isi',
-
-        'video_url',
-
-        'pdf',
-
-        'status',
-
-        'created_by'
-
-    ];
+protected $guarded = [];
 
     public function user()
     {
