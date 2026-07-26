@@ -99,35 +99,24 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::post('/admin/education/upload-image',[App\Http\Controllers\Admin\EducationController::class, 'uploadImage'])->name('education.upload-image');
     Route::resource('waste-point', WastePointController::class);
+    Route::delete('/education/{education}/delete-pdf',[EducationController::class, 'deletePdf'])->name('education.delete-pdf');
+    Route::delete('/education/{education}/delete-ppt',[EducationController::class, 'deletePpt'])->name('education.delete-ppt');
     Route::resource('education',EducationController::class);
     Route::delete('activity-image/{image}',[ActivityController::class, 'destroyImage'])->name('activity-image.destroy');
     Route::resource('activity',ActivityController::class);
     Route::get('/setting/qr-center',[SettingController::class,'qrCenter'])->name('setting.qr-center');
     Route::post('/setting/qr-center',[SettingController::class,'generateQr'])->name('setting.generate-qr');
     Route::resource('report',ReportController::class)->only(['index','show','update','destroy']);
-    Route::delete(
-    'gallery/image/{image}',
-    [GalleryController::class, 'destroyImage']
-)->name('gallery.image.destroy');
-
-Route::delete(
-    'gallery/video/{video}',
-    [GalleryController::class, 'destroyVideo']
-)->name('gallery.video.destroy');
+    Route::delete('gallery/image/{image}',[GalleryController::class, 'destroyImage'])->name('gallery.image.destroy');
+    Route::delete('gallery/video/{video}',[GalleryController::class, 'destroyVideo'])->name('gallery.video.destroy');
     Route::resource('gallery', GalleryController::class);
     Route::resource('schedule',ScheduleController::class);
     Route::resource('settings',SettingController::class)->only(['index','store','update']);
     Route::prefix('waste-deposits')->group(function () {
-
-        Route::get(
-            '/',[WasteDepositApprovalController::class,'index'])->name('waste-deposits.index');
-
-        Route::get('/{deposit}',[WasteDepositApprovalController::class,'show'])->name('waste-deposits.show');
-
-        Route::post('/{deposit}/approve',[WasteDepositApprovalController::class,'approve'])->name('waste-deposits.approve');
-
-        Route::post('/{deposit}/reject',[WasteDepositApprovalController::class,'reject'])->name('waste-deposits.reject');
-
+    Route::get('/',[WasteDepositApprovalController::class,'index'])->name('waste-deposits.index');
+    Route::get('/{deposit}',[WasteDepositApprovalController::class,'show'])->name('waste-deposits.show');
+    Route::post('/{deposit}/approve',[WasteDepositApprovalController::class,'approve'])->name('waste-deposits.approve');
+    Route::post('/{deposit}/reject',[WasteDepositApprovalController::class,'reject'])->name('waste-deposits.reject');
     });
 });
 

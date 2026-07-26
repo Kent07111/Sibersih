@@ -345,7 +345,51 @@ class EducationController extends Controller
             'location' => Storage::url($path),
         ]);
     }
+    public function deletePdf(Education $education)
+    {
+        if (!$education->pdf) {
+            return back()->with(
+                'error',
+                'File PDF tidak ditemukan.'
+            );
+        }
 
+        if (Storage::disk('public')->exists($education->pdf)) {
+            Storage::disk('public')->delete($education->pdf);
+        }
+
+        $education->update([
+            'pdf' => null,
+        ]);
+
+        return back()->with(
+            'success',
+            'File PDF berhasil dihapus.'
+        );
+    }
+
+    public function deletePpt(Education $education)
+    {
+        if (!$education->ppt) {
+            return back()->with(
+                'error',
+                'File PowerPoint tidak ditemukan.'
+            );
+        }
+
+        if (Storage::disk('public')->exists($education->ppt)) {
+            Storage::disk('public')->delete($education->ppt);
+        }
+
+        $education->update([
+            'ppt' => null,
+        ]);
+
+        return back()->with(
+            'success',
+            'File PowerPoint berhasil dihapus.'
+        );
+    }
     public function destroy(Education $education)
     {
         foreach (
