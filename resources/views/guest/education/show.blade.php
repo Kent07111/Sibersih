@@ -219,40 +219,51 @@
     </article>
 
 
-    {{-- ================= VIDEO ================= --}}
+@if($education->video_url)
 
-    @if($education->video_url)
+    @php
+        $youtubeIframe = preg_replace(
+            [
+                '/\swidth=["\'][^"\']*["\']/i',
+                '/\sheight=["\'][^"\']*["\']/i',
+                '/<iframe/i',
+            ],
+            [
+                '',
+                '',
+                '<iframe class="h-full w-full"',
+            ],
+            $education->video_url
+        );
+    @endphp
 
-        <div class="overflow-hidden rounded-3xl bg-white shadow-xl">
+    <div class="overflow-hidden rounded-3xl bg-white shadow-xl">
 
-            <div class="border-b bg-green-600 px-8 py-5 text-white">
+        <div class="border-b bg-green-600 px-8 py-5 text-white">
 
-                <h2 class="text-2xl font-bold">
-                    🎥 Video Edukasi
-                </h2>
+            <h2 class="text-2xl font-bold">
+                🎥 Video Edukasi
+            </h2>
 
-                <p class="mt-2 text-green-100">
-                    Tonton video untuk memahami materi dengan lebih mudah.
-                </p>
+            <p class="mt-2 text-green-100">
+                Tonton video untuk memahami materi dengan lebih mudah.
+            </p>
 
-            </div>
+        </div>
 
-            <div class="p-8">
+        <div class="p-8">
 
-                <div
-                    class="video-embed aspect-video overflow-hidden rounded-2xl bg-black shadow-lg"
-                >
+            <div class="aspect-video overflow-hidden rounded-2xl bg-black shadow-lg">
 
-                    {!! $education->video_url !!}
-
-                </div>
+                {!! $youtubeIframe !!}
 
             </div>
 
         </div>
 
-    @endif
+    </div>
 
+@endif
 
 {{-- ================= POWERPOINT ================= --}}
 

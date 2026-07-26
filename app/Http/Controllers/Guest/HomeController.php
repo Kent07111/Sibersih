@@ -13,33 +13,70 @@ class HomeController extends Controller
 {
     public function index()
     {
-        return view('guest.home',[
+        return view('guest.home', [
 
             'educations' => Education::where('status', 'Publish')
                 ->latest()
                 ->take(6)
                 ->get(),
 
-            'activities'=>Activity::where('status','Publish')
-                ->latest()
+            'activities' => Activity::where('status', 'Publish')
+                ->orderByDesc('tanggal')
                 ->take(3)
                 ->get(),
 
-            'schedules'=>Schedule::where('status','Aktif')
+            'schedules' => Schedule::where('status', 'Aktif')
                 ->orderBy('tanggal')
+                ->orderBy('jam')
                 ->take(3)
                 ->get(),
 
-            'wastePoints'=>WastePoint::all(),
+            /*
+            |--------------------------------------------------------------------------
+            | Titik tempat sampah
+            |--------------------------------------------------------------------------
+            */
 
-            'reportCount'=>Report::count(),
+            'wastePoints' => WastePoint::query()
+                ->whereNotNull('latitude')
+                ->whereNotNull('longitude')
+                ->get(),
 
-            'educationCount'=>Education::count(),
+            /*
+            |--------------------------------------------------------------------------
+            | Laporan warga
+            |--------------------------------------------------------------------------
+            |
+            | Laporan ditolak tidak ditampilkan di peta publik.
+            |
+            */
 
-            'activityCount'=>Activity::count(),
+            'reports' => Report::query()
+                ->whereNotNull('latitude')
+                ->whereNotNull('longitude')
+                ->whereIn('status', [
+                    'Menunggu',
+                    'Diproses',
+                    'Selesai',
+                ])
+                ->latest()
+                ->get(),
 
-            'wastePointCount'=>WastePoint::count()
+            /*
+            |--------------------------------------------------------------------------
+            | Statistik
+            |--------------------------------------------------------------------------
+            */
 
+            'reportCount' => Report::count(),
+
+            'educationCount' => Education::where('status', 'Publish')
+                ->count(),
+
+            'activityCount' => Activity::where('status', 'Publish')
+                ->count(),
+
+            'wastePointCount' => WastePoint::count(),
         ]);
     }
 }

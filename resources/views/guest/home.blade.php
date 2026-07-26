@@ -430,159 +430,123 @@
 
 <!-- MAP -->
 
+<!-- MAP -->
+
 <section
     id="peta"
     class="bg-slate-100 py-24"
 >
-
-    <div
-        class="mx-auto max-w-7xl px-6"
-    >
+    <div class="mx-auto max-w-7xl px-6">
 
         {{-- Heading --}}
-
         <div
             class="mx-auto max-w-3xl text-center"
             data-aos="fade-up"
         >
-
             <span
                 class="rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700"
             >
-
                 Peta Interaktif
-
             </span>
 
-            <h2
-                class="mt-6 text-4xl font-bold text-slate-800"
-            >
-
-                Sebaran Titik Sampah
-
+            <h2 class="mt-6 text-4xl font-bold text-slate-800">
+                Sebaran Titik Sampah dan Laporan Warga
             </h2>
 
-            <p
-                class="mt-5 leading-8 text-slate-600"
-            >
-
-                Temukan lokasi Bank Sampah,
-                TPS,
-                maupun tempat pengelolaan sampah
-                yang tersedia di wilayah Anda.
-
+            <p class="mt-5 leading-8 text-slate-600">
+                Temukan lokasi Bank Sampah, TPS, tempat pengelolaan
+                sampah, serta titik laporan sampah yang dikirimkan warga.
             </p>
-
         </div>
 
-        {{-- Statistik kecil --}}
+        {{-- Statistik --}}
+        <div class="mt-12 grid gap-6 md:grid-cols-3">
 
-        <div
-            class="mt-12 grid gap-6 md:grid-cols-3"
-        >
-
-            <div
-                class="rounded-2xl bg-white p-6 shadow"
-            >
-
+            {{-- Titik sampah --}}
+            <div class="rounded-2xl bg-white p-6 shadow">
                 <div class="text-3xl">
-
-                    📍
-
-                </div>
-
-                <h3
-                    class="mt-3 text-3xl font-bold text-green-600"
-                >
-
-                    {{ $wastePoints->count() }}
-
-                </h3>
-
-                <p
-                    class="mt-2 text-slate-500"
-                >
-
-                    Total Titik Sampah
-
-                </p>
-
-            </div>
-
-            <div
-                class="rounded-2xl bg-white p-6 shadow"
-            >
-
-                <div class="text-3xl">
-
                     ♻️
-
                 </div>
 
-                <h3
-                    class="mt-3 text-3xl font-bold text-blue-600"
-                >
-
-                    {{ $wastePoints->where('status','Aktif')->count() }}
-
+                <h3 class="mt-3 text-3xl font-bold text-green-600">
+                    {{ $wastePoints->count() }}
                 </h3>
 
-                <p
-                    class="mt-2 text-slate-500"
-                >
-
-                    Titik Aktif
-
+                <p class="mt-2 text-slate-500">
+                    Titik Tempat Sampah
                 </p>
-
             </div>
 
-            <div
-                class="rounded-2xl bg-white p-6 shadow"
-            >
-
+            {{-- Laporan warga --}}
+            <div class="rounded-2xl bg-white p-6 shadow">
                 <div class="text-3xl">
-
-                    🌱
-
+                    📢
                 </div>
 
-                <h3
-                    class="mt-3 text-3xl font-bold text-yellow-500"
-                >
-
-                    {{ $wastePoints->pluck('jenis')->unique()->count() }}
-
+                <h3 class="mt-3 text-3xl font-bold text-red-600">
+                    {{ $reports->count() }}
                 </h3>
 
-                <p
-                    class="mt-2 text-slate-500"
-                >
-
-                    Jenis Titik
-
+                <p class="mt-2 text-slate-500">
+                    Laporan Warga
                 </p>
+            </div>
 
+            {{-- Total lokasi --}}
+            <div class="rounded-2xl bg-white p-6 shadow">
+                <div class="text-3xl">
+                    📍
+                </div>
+
+                <h3 class="mt-3 text-3xl font-bold text-blue-600">
+                    {{ $wastePoints->count() + $reports->count() }}
+                </h3>
+
+                <p class="mt-2 text-slate-500">
+                    Total Lokasi pada Peta
+                </p>
             </div>
 
         </div>
 
-        {{-- MAP --}}
-
+        {{-- Legenda --}}
         <div
-            class="mt-12 overflow-hidden rounded-3xl bg-white shadow-xl"
+            class="mt-8 flex flex-wrap items-center justify-center gap-4"
+            data-aos="fade-up"
+        >
+            <div
+                class="flex items-center gap-3 rounded-xl bg-white px-5 py-3 shadow"
+            >
+                <span class="h-4 w-4 rounded-full bg-green-500"></span>
+
+                <span class="font-medium text-slate-700">
+                    Titik Tempat Sampah
+                </span>
+            </div>
+
+            <div
+                class="flex items-center gap-3 rounded-xl bg-white px-5 py-3 shadow"
+            >
+                <span class="h-4 w-4 rounded-full bg-red-500"></span>
+
+                <span class="font-medium text-slate-700">
+                    Laporan Warga
+                </span>
+            </div>
+        </div>
+
+        {{-- Map --}}
+        <div
+            class="mt-8 overflow-hidden rounded-3xl bg-white shadow-xl"
             data-aos="zoom-in"
         >
-
             <div
                 id="landingMap"
-                class="h-[650px]"
+                class="h-[650px] w-full"
             ></div>
-
         </div>
 
     </div>
-
 </section>
 
 
@@ -705,9 +669,8 @@
                         <div
                             class="mt-8 flex items-center justify-between"
                         >
-
                             <a
-                                href="#"
+                                href="{{ route('guest.education.show',$education) }}"
                                 class="font-semibold text-green-600 transition hover:text-green-700"
                             >
 
@@ -801,172 +764,459 @@
 @push('scripts')
 
 <script>
+document.addEventListener('DOMContentLoaded', function () {
 
-const wastePoints=@json($wastePoints);
+    const wastePoints = @json($wastePoints);
+    const reports = @json($reports);
 
-const map=L.map("landingMap").setView(
+    const mapElement = document.getElementById('landingMap');
 
-    [-6.3235,107.3375],
-
-    13
-
-);
-
-L.tileLayer(
-
-'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-
-{
-
-attribution:'© OpenStreetMap'
-
-}
-
-).addTo(map);
-
-const greenIcon=new L.Icon({
-
-iconUrl:'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
-
-shadowUrl:'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-
-iconSize:[25,41],
-
-iconAnchor:[12,41],
-
-popupAnchor:[1,-34],
-
-shadowSize:[41,41]
-
-});
-
-let bounds=[];
-
-wastePoints.forEach(function(item){
-
-    bounds.push([
-
-        item.latitude,
-
-        item.longitude
-
-    ]);
-
-    let foto='';
-
-    if(item.foto){
-
-        foto=`
-            <img
-                src="/storage/${item.foto}"
-                style="
-                    width:260px;
-                    height:150px;
-                    object-fit:cover;
-                    border-radius:10px;
-                    margin-bottom:10px;
-                "
-            >
-        `;
-
+    if (!mapElement) {
+        return;
     }
 
-    L.marker(
-
-        [
-
-            item.latitude,
-
-            item.longitude
-
-        ],
-
-        {
-
-            icon:greenIcon
-
-        }
-
-    )
-
-    .addTo(map)
-
-    .bindPopup(`
-
-        ${foto}
-
-        <h3 style="font-size:18px;font-weight:bold">
-
-            ${item.nama}
-
-        </h3>
-
-        <hr>
-
-        <p>
-
-            <b>Jenis :</b>
-
-            ${item.jenis}
-
-        </p>
-
-        <p>
-
-            <b>Status :</b>
-
-            ${item.status}
-
-        </p>
-
-        <p>
-
-            ${item.alamat}
-
-        </p>
-
-        <br>
-
-        <a
-            href="https://www.google.com/maps?q=${item.latitude},${item.longitude}"
-            target="_blank"
-            style="
-                display:block;
-                background:#16a34a;
-                color:white;
-                text-align:center;
-                padding:10px;
-                border-radius:8px;
-                text-decoration:none;
-                font-weight:bold;
-            "
-        >
-
-            Petunjuk Arah
-
-        </a>
-
-    `);
-
-});
-
-if(bounds.length){
-
-    map.fitBounds(
-
-        bounds,
-
-        {
-
-            padding:[40,40]
-
-        }
-
+    const map = L.map('landingMap').setView(
+        [-6.3235, 107.3375],
+        13
     );
 
-}
+    L.tileLayer(
+        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        {
+            attribution: '&copy; OpenStreetMap contributors',
+            maxZoom: 19
+        }
+    ).addTo(map);
 
+    /*
+    |--------------------------------------------------------------------------
+    | Marker tempat sampah
+    |--------------------------------------------------------------------------
+    */
+
+    const greenIcon = new L.Icon({
+        iconUrl:
+            'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+
+        shadowUrl:
+            'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Marker laporan warga
+    |--------------------------------------------------------------------------
+    */
+
+    const redIcon = new L.Icon({
+        iconUrl:
+            'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+
+        shadowUrl:
+            'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Layer marker
+    |--------------------------------------------------------------------------
+    */
+
+    const wastePointLayer = L.layerGroup().addTo(map);
+    const reportLayer = L.layerGroup().addTo(map);
+
+    const bounds = [];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Fungsi mengamankan teks
+    |--------------------------------------------------------------------------
+    */
+
+    function escapeHtml(value) {
+        if (value === null || value === undefined) {
+            return '-';
+        }
+
+        return String(value)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Warna status laporan
+    |--------------------------------------------------------------------------
+    */
+
+    function reportStatusColor(status) {
+        switch (status) {
+            case 'Menunggu':
+                return '#eab308';
+
+            case 'Diproses':
+                return '#2563eb';
+
+            case 'Selesai':
+                return '#16a34a';
+
+            case 'Ditolak':
+                return '#64748b';
+
+            default:
+                return '#64748b';
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tampilkan titik tempat sampah
+    |--------------------------------------------------------------------------
+    */
+
+    wastePoints.forEach(function (item) {
+
+        const latitude = Number(item.latitude);
+        const longitude = Number(item.longitude);
+
+        if (
+            !Number.isFinite(latitude) ||
+            !Number.isFinite(longitude)
+        ) {
+            return;
+        }
+
+        bounds.push([latitude, longitude]);
+
+        let foto = '';
+
+        if (item.foto) {
+            foto = `
+                <img
+                    src="/storage/${encodeURI(item.foto)}"
+                    alt="${escapeHtml(item.nama)}"
+                    style="
+                        width:260px;
+                        height:150px;
+                        object-fit:cover;
+                        border-radius:10px;
+                        margin-bottom:10px;
+                    "
+                >
+            `;
+        }
+
+        const marker = L.marker(
+            [latitude, longitude],
+            {
+                icon: greenIcon
+            }
+        );
+
+        marker.bindPopup(`
+            <div style="width:260px">
+
+                ${foto}
+
+                <div
+                    style="
+                        display:inline-block;
+                        background:#dcfce7;
+                        color:#15803d;
+                        padding:5px 10px;
+                        border-radius:999px;
+                        font-size:12px;
+                        font-weight:bold;
+                        margin-bottom:8px;
+                    "
+                >
+                    Titik Tempat Sampah
+                </div>
+
+                <h3
+                    style="
+                        margin:4px 0 8px;
+                        font-size:18px;
+                        font-weight:bold;
+                        color:#1e293b;
+                    "
+                >
+                    ${escapeHtml(item.nama)}
+                </h3>
+
+                <div
+                    style="
+                        border-top:1px solid #e2e8f0;
+                        margin-bottom:10px;
+                    "
+                ></div>
+
+                <p style="margin:5px 0">
+                    <b>Kode:</b>
+                    ${escapeHtml(item.kode)}
+                </p>
+
+                <p style="margin:5px 0">
+                    <b>Jenis:</b>
+                    ${escapeHtml(item.jenis)}
+                </p>
+
+                <p style="margin:5px 0">
+                    <b>Status:</b>
+                    ${escapeHtml(item.status)}
+                </p>
+
+                <p style="margin:5px 0">
+                    <b>Alamat:</b><br>
+                    ${escapeHtml(item.alamat)}
+                </p>
+
+                ${
+                    item.deskripsi
+                        ? `
+                            <p style="margin:8px 0">
+                                <b>Deskripsi:</b><br>
+                                ${escapeHtml(item.deskripsi)}
+                            </p>
+                        `
+                        : ''
+                }
+
+                <a
+                    href="https://www.google.com/maps?q=${latitude},${longitude}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style="
+                        display:block;
+                        margin-top:14px;
+                        background:#16a34a;
+                        color:white;
+                        text-align:center;
+                        padding:10px;
+                        border-radius:8px;
+                        text-decoration:none;
+                        font-weight:bold;
+                    "
+                >
+                    Petunjuk Arah
+                </a>
+
+            </div>
+        `);
+
+        marker.addTo(wastePointLayer);
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tampilkan laporan warga
+    |--------------------------------------------------------------------------
+    */
+
+    reports.forEach(function (item) {
+
+        const latitude = Number(item.latitude);
+        const longitude = Number(item.longitude);
+
+        if (
+            !Number.isFinite(latitude) ||
+            !Number.isFinite(longitude)
+        ) {
+            return;
+        }
+
+        bounds.push([latitude, longitude]);
+
+        let foto = '';
+
+        if (item.foto) {
+            foto = `
+                <img
+                    src="/storage/${encodeURI(item.foto)}"
+                    alt="Foto laporan warga"
+                    style="
+                        width:260px;
+                        height:150px;
+                        object-fit:cover;
+                        border-radius:10px;
+                        margin-bottom:10px;
+                    "
+                >
+            `;
+        }
+
+        const statusColor = reportStatusColor(item.status);
+
+        const marker = L.marker(
+            [latitude, longitude],
+            {
+                icon: redIcon
+            }
+        );
+
+        marker.bindPopup(`
+            <div style="width:260px">
+
+                ${foto}
+
+                <div
+                    style="
+                        display:inline-block;
+                        background:#fee2e2;
+                        color:#dc2626;
+                        padding:5px 10px;
+                        border-radius:999px;
+                        font-size:12px;
+                        font-weight:bold;
+                        margin-bottom:8px;
+                    "
+                >
+                    Laporan Warga
+                </div>
+
+                <h3
+                    style="
+                        margin:4px 0 8px;
+                        font-size:18px;
+                        font-weight:bold;
+                        color:#1e293b;
+                    "
+                >
+                    Laporan Sampah
+                </h3>
+
+                <div
+                    style="
+                        border-top:1px solid #e2e8f0;
+                        margin-bottom:10px;
+                    "
+                ></div>
+
+                <p style="margin:5px 0">
+                    <b>Pelapor:</b>
+                    ${escapeHtml(item.nama)}
+                </p>
+
+                <p style="margin:5px 0">
+                    <b>Wilayah:</b>
+                    RT ${escapeHtml(item.rt)}
+                    /
+                    RW ${escapeHtml(item.rw)}
+                </p>
+
+                <p style="margin:5px 0">
+                    <b>Lokasi:</b><br>
+                    ${escapeHtml(item.lokasi)}
+                </p>
+
+                <p style="margin:5px 0">
+                    <b>Deskripsi:</b><br>
+                    ${escapeHtml(item.deskripsi)}
+                </p>
+
+                <p style="margin:8px 0">
+                    <b>Status:</b>
+
+                    <span
+                        style="
+                            display:inline-block;
+                            background:${statusColor};
+                            color:white;
+                            padding:3px 8px;
+                            border-radius:999px;
+                            font-size:12px;
+                            font-weight:bold;
+                        "
+                    >
+                        ${escapeHtml(item.status)}
+                    </span>
+                </p>
+
+                <a
+                    href="https://www.google.com/maps?q=${latitude},${longitude}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style="
+                        display:block;
+                        margin-top:14px;
+                        background:#dc2626;
+                        color:white;
+                        text-align:center;
+                        padding:10px;
+                        border-radius:8px;
+                        text-decoration:none;
+                        font-weight:bold;
+                    "
+                >
+                    Lihat Lokasi
+                </a>
+
+            </div>
+        `);
+
+        marker.addTo(reportLayer);
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Kontrol layer
+    |--------------------------------------------------------------------------
+    */
+
+    const overlayMaps = {
+        '♻️ Titik Tempat Sampah': wastePointLayer,
+        '📢 Laporan Warga': reportLayer
+    };
+
+    L.control.layers(
+        null,
+        overlayMaps,
+        {
+            collapsed: false,
+            position: 'topright'
+        }
+    ).addTo(map);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Sesuaikan area peta berdasarkan seluruh marker
+    |--------------------------------------------------------------------------
+    */
+
+    if (bounds.length > 0) {
+        map.fitBounds(
+            bounds,
+            {
+                padding: [40, 40],
+                maxZoom: 16
+            }
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Memperbaiki ukuran peta setelah AOS/rendering
+    |--------------------------------------------------------------------------
+    */
+
+    setTimeout(function () {
+        map.invalidateSize();
+    }, 300);
+
+});
 </script>
-
 
 @endpush
