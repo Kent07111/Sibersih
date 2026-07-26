@@ -3,6 +3,8 @@ import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
+console.log("PDF.js API:", pdfjsLib.version);
+console.log("PDF.js Worker:", pdfWorkerUrl);
 document.addEventListener("DOMContentLoaded", () => {
     const viewer = document.getElementById("pdf-viewer");
 
@@ -28,10 +30,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const errorElement = document.getElementById("pdf-error");
 
+    if (
+        !pdfUrl ||
+        !canvas ||
+        !context ||
+        !previousButton ||
+        !nextButton ||
+        !zoomInButton ||
+        !zoomOutButton ||
+        !currentPageElement ||
+        !totalPageElement ||
+        !loadingElement ||
+        !errorElement
+    ) {
+        console.error("Elemen PDF Viewer tidak lengkap.");
+        return;
+    }
+
+    console.log("PDF.js version:", pdfjsLib.version);
+    console.log("PDF worker URL:", pdfWorkerUrl);
+    console.log("PDF URL:", pdfUrl);
+
     let pdfDocument = null;
     let currentPage = 1;
-    let scale = 1.3;
+    let zoomScale = 1;
     let renderTask = null;
+    let resizeTimer = null;
 
     async function renderPage(pageNumber) {
         if (!pdfDocument) {
@@ -39,10 +63,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
+            loadingElement.textContent = `Menampilkan halaman ${pageNumber}...`;
+
             loadingElement.classList.remove("hidden");
             errorElement.classList.add("hidden");
 
-            // Batalkan render sebelumnya jika masih berjalan
             if (renderTask) {
                 renderTask.cancel();
                 renderTask = null;
@@ -50,19 +75,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const page = await pdfDocument.getPage(pageNumber);
 
-            const originalViewport = page.getViewport({
-                scale,
+            const baseViewport = page.getViewport({
+                scale: 1,
             });
 
-            const container = canvas.parentElement;
+            const canvasContainer = canvas.parentElement;
 
-            const availableWidth = container.clientWidth - 32;
+            const availableWidth = Math.max(
+                canvasContainer.clientWidth - 32,
+                280,
+            );
 
-            let finalScale = scale;
+            const fitScale = availableWidth / baseViewport.width;
 
-            if (originalViewport.width > availableWidth) {
-                finalScale = scale * (availableWidth / originalViewport.width);
-            }
+            const finalScale = fitScale * zoomScale;
 
             const viewport = page.getViewport({
                 scale: finalScale,
@@ -78,57 +104,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
             canvas.style.height = `${Math.floor(viewport.height)}px`;
 
-            context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-
-            renderTask = page.render({
+            const renderContext = {
                 canvasContext: context,
                 viewport,
-            });
+                transform:
+                    pixelRatio !== 1
+                        ? [pixelRatio, 0, 0, pixelRatio, 0, 0]
+                        : null,
+            };
+
+            renderTask = page.render(renderContext);
 
             await renderTask.promise;
 
             renderTask = null;
 
-            currentPageElement.textContent = currentPage;
+            currentPageElement.textContent = pageNumber;
 
-            previousButton.disabled = currentPage <= 1;
+            previousButton.disabled = pageNumber <= 1;
 
-            nextButton.disabled = currentPage >= pdfDocument.numPages;
+            nextButton.disabled = pageNumber >= pdfDocument.numPages;
         } catch (error) {
-            /*
-             * RenderingCancelledException bukan error utama.
-             * Ini terjadi saat render lama dibatalkan.
-             */
             if (error?.name === "RenderingCancelledException") {
                 return;
             }
 
-            console.error("Gagal merender PDF:", error);
+            console.error("Gagal merender halaman PDF:", error);
 
             errorElement.textContent = `Gagal menampilkan halaman PDF: ${error.message}`;
 
             errorElement.classList.remove("hidden");
         } finally {
             loadingElement.classList.add("hidden");
+            loadingElement.textContent = "Memuat materi PDF...";
         }
     }
 
     async function loadPdf() {
         try {
+            loadingElement.textContent = "Mengambil file PDF...";
+
             loadingElement.classList.remove("hidden");
             errorElement.classList.add("hidden");
-
-            console.log("URL PDF:", pdfUrl);
-            console.log("Worker PDF:", pdfjsLib.GlobalWorkerOptions.workerSrc);
 
             const response = await fetch(pdfUrl, {
                 method: "GET",
                 headers: {
                     Accept: "application/pdf",
                 },
+                cache: "no-store",
             });
 
             console.log("Status PDF:", response.status);
+
             console.log("Content-Type:", response.headers.get("content-type"));
 
             if (!response.ok) {
@@ -154,13 +182,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error("File PDF kosong.");
             }
 
-            const pdfData = new Uint8Array(arrayBuffer);
+            loadingElement.textContent = "Memproses file PDF...";
 
             const loadingTask = pdfjsLib.getDocument({
-                data: pdfData,
+                data: new Uint8Array(arrayBuffer),
             });
 
+            loadingTask.onProgress = ({ loaded, total }) => {
+                if (total > 0) {
+                    const percentage = Math.round((loaded / total) * 100);
+
+                    loadingElement.textContent = `Memuat PDF ${percentage}%...`;
+                }
+            };
+
             pdfDocument = await loadingTask.promise;
+
+            console.log(
+                "PDF berhasil dimuat:",
+                pdfDocument.numPages,
+                "halaman",
+            );
 
             totalPageElement.textContent = pdfDocument.numPages;
 
@@ -175,50 +217,49 @@ document.addEventListener("DOMContentLoaded", () => {
             errorElement.classList.remove("hidden");
         } finally {
             loadingElement.classList.add("hidden");
+            loadingElement.textContent = "Memuat materi PDF...";
         }
     }
 
-    previousButton.addEventListener("click", () => {
+    previousButton.addEventListener("click", async () => {
         if (currentPage <= 1) {
             return;
         }
 
         currentPage--;
 
-        renderPage(currentPage);
+        await renderPage(currentPage);
     });
 
-    nextButton.addEventListener("click", () => {
+    nextButton.addEventListener("click", async () => {
         if (!pdfDocument || currentPage >= pdfDocument.numPages) {
             return;
         }
 
         currentPage++;
 
-        renderPage(currentPage);
+        await renderPage(currentPage);
     });
 
-    zoomInButton.addEventListener("click", () => {
-        if (scale >= 3) {
+    zoomInButton.addEventListener("click", async () => {
+        if (zoomScale >= 2.5) {
             return;
         }
 
-        scale += 0.2;
+        zoomScale += 0.2;
 
-        renderPage(currentPage);
+        await renderPage(currentPage);
     });
 
-    zoomOutButton.addEventListener("click", () => {
-        if (scale <= 0.6) {
+    zoomOutButton.addEventListener("click", async () => {
+        if (zoomScale <= 0.6) {
             return;
         }
 
-        scale -= 0.2;
+        zoomScale -= 0.2;
 
-        renderPage(currentPage);
+        await renderPage(currentPage);
     });
-
-    let resizeTimer;
 
     window.addEventListener("resize", () => {
         clearTimeout(resizeTimer);
